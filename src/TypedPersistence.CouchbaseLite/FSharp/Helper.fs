@@ -41,19 +41,22 @@ module Helpers =
         t.IsGenericType &&
         t.GetGenericTypeDefinition() = typedefof<List<_>>
 
-    let convertFromArrayObject fnc array  =
-        let rec helper lst index fnc (array: ArrayObject)  =
-            if array.Count > index then
+    let convertFromArrayObject fnc (array: ArrayObject) =
+        if array.Count > 0 then
+            let rec helper lst index fnc (array: ArrayObject) =
                 let result = fnc index array
                 match result with
                 | Ok value ->
                     let out = value::lst
-                    helper out (index+1) fnc array
+                    if index = 0 then
+                        Ok out
+                    else
+                        helper out (index - 1) fnc array
                 | Error error ->
                     Error error
-            else
-                Ok lst
-        helper [] 0 fnc array
+            helper [] (array.Count - 1) fnc array
+        else
+            Ok []
 
     let makeOptionValue typey v isSome =
         let createOptionType typeParam =
