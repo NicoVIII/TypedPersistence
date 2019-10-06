@@ -34,7 +34,7 @@ module ``Saving and loading tests`` =
         | Ok record ->
             record.value = data
         | Error error ->
-            printf "Error: %A" error
+            printfn "Error: %A" error
             false
 
     [<Property>]
