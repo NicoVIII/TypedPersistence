@@ -17,7 +17,7 @@ module ``Saving and loading tests`` =
         use db = openDatabase ()
         db.Delete()
 
-    let genericTest<'a when 'a : equality> (data: 'a) (compare: 'a -> bool) =
+    let genericTest<'a when 'a : equality> (data: 'a) =
         let dataRecord = { GenericRecord.value = data }
 
         cleanUpDatabase ()

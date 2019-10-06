@@ -70,8 +70,8 @@ module Saving =
                 failwith "Something went wrong, Option was neither Some nor None"
         | _ when FSharpType.IsRecord typeObj ->
             let newDict = MutableDictionaryObject ()
-            dictionary.SetDictionary (name, newDict)
-            |> saveDictionaryGeneric saveType <| value
+            saveDictionaryGeneric saveType newDict value
+            dictionary.SetDictionary (name, newDict) |> ignore
             ()
         | _ ->
             typeObj.FullName
