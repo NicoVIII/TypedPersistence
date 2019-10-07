@@ -11,11 +11,12 @@ jobs:
     - uses: actions/checkout@v1
       with:
         fetch-depth: 1
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 2.2.103
     - name: Build library
       run: ./build.sh
     - name: Run tests
-      run: dotnet test
+      run: dotnet test -s test.runsettings -r TestResults
+    - name: Upload coverage report
+      run: |
+        curl -s https://codecov.io/bash > codecov
+        chmod +x codecov
+        ./codecov -f "TestResults/*/coverage.opencover.xml" -t ${{ secrets.codecovtoken }}
