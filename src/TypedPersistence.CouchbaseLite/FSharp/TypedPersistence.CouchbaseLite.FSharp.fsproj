@@ -8,7 +8,7 @@
     <Company>NicoVIII</Company>
     <PackageTags>CouchbaseLite,Typesafety,F#</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/NicoVIII/GogApi.DotNet</RepositoryUrl>
+    <RepositoryUrl>https://github.com/NicoVIII/TypedPersistence-for-CouchbaseLite</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
