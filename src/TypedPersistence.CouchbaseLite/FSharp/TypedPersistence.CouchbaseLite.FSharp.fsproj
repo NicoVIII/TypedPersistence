@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>TypedPersistence.CouchbaseLite</PackageId>
+    <!--<Version>$version$</Version>-->
+    <Authors>NicoVIII</Authors>
+    <Company>NicoVIII</Company>
+    <PackageTags>CouchbaseLite,Typesafety,F#</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/NicoVIII/GogApi.DotNet</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
