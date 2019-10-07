@@ -9,4 +9,4 @@ $projectFile = "src/TypedPersistence.CouchbaseLite/FSharp/TypedPersistence.Couch
 (Get-Content $projectFile).replace('</Version>-->', '</Version>') | Set-Content $projectFile
 
 # Pack as NugetPackage
-dotnet pack src/GogApi.DotNet/FSharp -c Release -o ../../..
+dotnet pack src/TypedPersistence.CouchbaseLite/FSharp -c Release -o ../../..
