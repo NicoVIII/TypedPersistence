@@ -3,7 +3,9 @@ namespace TypedPersistence.CouchbaseLite.FSharp.Tests
 open Couchbase.Lite
 open FsCheck
 open FsCheck.Xunit
+open FsUnit
 open TypedPersistence.CouchbaseLite.FSharp
+open Xunit
 
 module ``Saving and loading tests`` =
     type GenericRecord<'a> = { value: 'a }
@@ -18,7 +20,7 @@ module ``Saving and loading tests`` =
         use db = openDatabase ()
         db.Delete()
 
-    let genericTest<'a when 'a : equality> (data: 'a) =
+    let genericPropertyTest<'a when 'a : equality> (data: 'a) =
         let dataRecord = { GenericRecord.value = data }
 
         cleanUpDatabase ()
@@ -42,15 +44,40 @@ module ``Saving and loading tests`` =
             printfn "Error: %A" error
             false
 
+    (*[<Fact>]
+    let ``Fails to load unexisting document`` () =
+        cleanUpDatabase ()
+
+        use db = openDatabase ()
+        let result = loadDocument<int> db documentName
+        db.Close()
+
+        result |> should equal (Error DocumentNotExisting)
+
+    [<Fact>]
+    let ``Fails to load unexisting property`` () =
+        cleanUpDatabase ()
+
+        use db = openDatabase ()
+        saveDocument db documentName { value = 0 }
+        db.Close ()
+
+        use db = openDatabase ()
+        let result = loadDocument<GenericRecord<int>> db documentName
+        db.Close()
+
+        let error = ValueNotExisting "value" |> Error
+        result |> should equal error*)
+
     [<Property>]
     let ``Handles ints correctly`` (number: int) =
-        genericTest<int> number
+        genericPropertyTest<int> number
 
     [<Property>]
     let ``Handles strings correctly`` (text: NonNull<string>) =
         let text = text.Get
 
-        genericTest<string> text
+        genericPropertyTest<string> text
 
     [<Property>]
     let ``Handles option strings correctly`` (textOption: Option<NonNull<string>>) =
@@ -59,35 +86,35 @@ module ``Saving and loading tests`` =
             | Some text -> Some text.Get
             | None -> None
 
-        genericTest<string option> text
+        genericPropertyTest<string option> text
 
     [<Property>]
     let ``Handles option ints correctly`` (numberOption: Option<int>) =
-        genericTest<int option> numberOption
+        genericPropertyTest<int option> numberOption
 
     // Does not work for now... :(
     [<Property>]
     let ``Handles int list correctly`` (numberList: int list) =
-        genericTest<int list> numberList
+        genericPropertyTest<int list> numberList
 
     // Does not work for now... :(
     [<Property>]
     let ``Handles string list correctly`` (textList: NonNull<string> list) =
         textList
         |> List.map (fun x -> x.Get)
-        |> genericTest<string list>
+        |> genericPropertyTest<string list>
 
     [<Property>]
     let ``Handles int record correctly`` (numberRecord: GenericRecord<int>) =
-        genericTest<GenericRecord<int>> numberRecord
+        genericPropertyTest<GenericRecord<int>> numberRecord
 
     [<Property>]
     let ``Handles string record correctly`` (textRecord: GenericRecord<NonNull<string>>) =
         { value = textRecord.value.Get }
-        |> genericTest<GenericRecord<string>>
+        |> genericPropertyTest<GenericRecord<string>>
 
     [<Property>]
     let ``Handles int option, string record2 correctly`` (record: GenericRecord2<int option, NonNull<string>>) =
         let record = { value1 = record.value1; value2 = record.value2.Get }
 
-        genericTest<GenericRecord2<int option, string>> record
+        genericPropertyTest<GenericRecord2<int option, string>> record
