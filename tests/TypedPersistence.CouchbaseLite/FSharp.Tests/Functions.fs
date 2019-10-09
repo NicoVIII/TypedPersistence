@@ -22,6 +22,17 @@ module Functions =
         db.Close()
         result
 
+    let saveToDatabaseWithMapping<'a, 'b> documentName mapping (data: 'b) =
+        use db = openDatabase()
+        saveDocumentWithMapping<'a, 'b> mapping db documentName data
+        db.Close()
+
+    let loadFromDatabaseWithMapping<'a, 'b> documentName mapping =
+        use db = openDatabase()
+        let result = loadDocumentWithMapping<'a, 'b> mapping db documentName
+        db.Close()
+        result
+
     let categorize result =
         match result with
         | Ok _ -> OkCase
@@ -30,17 +41,10 @@ module Functions =
             | DocumentNotExisting _ -> DocumentNotExistingErrorCase
             | ValueNotExisting _ -> ValueNotExistingErrorCase
 
-    let genericPropertyTest<'a when 'a: equality> documentName setUp (data: 'a) =
-        let dataRecord = { GenericRecord.value = data }
+    let wrapInRecord data =
+        { GenericRecord.value = data }
 
-        cleanUpDatabase()
-
-        setUp dataRecord
-
-        saveToDatabase documentName dataRecord
-
-        let result = loadFromDatabase<GenericRecord<'a>> documentName
-
+    let checkResultSuccess data result =
         match result with
         | Ok record ->
             if record.value = data then
@@ -51,5 +55,17 @@ module Functions =
         | Error error ->
             printfn "Error: %A" error
             false
+
+    let genericPropertyTest<'a when 'a: equality> documentName setUp (data: 'a) =
+        let dataRecord = wrapInRecord data
+
+        cleanUpDatabase()
+
+        setUp dataRecord
+
+        saveToDatabase documentName dataRecord
+
+        loadFromDatabase<GenericRecord<'a>> documentName
+        |> checkResultSuccess data
 
     let simplePropertyTest<'a when 'a: equality> documentName (data: 'a) = genericPropertyTest<'a> documentName ignore data

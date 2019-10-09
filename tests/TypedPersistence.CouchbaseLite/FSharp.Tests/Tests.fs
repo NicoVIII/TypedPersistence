@@ -3,7 +3,6 @@ namespace TypedPersistence.CouchbaseLite.FSharp.Tests
 open FsCheck
 open FsCheck.Xunit
 open FsUnit
-open TypedPersistence.CouchbaseLite.FSharp
 open Xunit
 
 module ``Saving and loading tests`` =
@@ -11,6 +10,8 @@ module ``Saving and loading tests`` =
 
     let saveToDatabase<'a> = saveToDatabase<'a> documentName
     let loadFromDatabase<'a> () = loadFromDatabase<'a> documentName
+    let saveToDatabaseWithMapping<'a, 'b> = saveToDatabaseWithMapping<'a, 'b> documentName
+    let loadFromDatabaseWithMapping<'a, 'b> = loadFromDatabaseWithMapping<'a, 'b> documentName
     let simplePropertyTest<'a when 'a : equality> = simplePropertyTest<'a> documentName
     let genericPropertyTest<'a when 'a : equality> = genericPropertyTest<'a> documentName
 
@@ -92,3 +93,72 @@ module ``Saving and loading tests`` =
     [<Property>]
     let ``Handles int record list correctly`` (numberRecordList: GenericRecord<int> list) =
         simplePropertyTest<GenericRecord<int> list> numberRecordList
+
+    [<Property>]
+    let ``Handles saving with mapping with id correctly`` (number: int) =
+        let numberRecord = wrapInRecord number
+
+        cleanUpDatabase()
+
+        saveToDatabaseWithMapping<GenericRecord<int>, GenericRecord<int>> id numberRecord
+
+        loadFromDatabase<GenericRecord<int>> ()
+        |> checkResultSuccess number
+
+    [<Property>]
+    let ``Handles loading with mapping with id correctly`` (number: int) =
+        let numberRecord = wrapInRecord number
+
+        cleanUpDatabase()
+
+        saveToDatabase<GenericRecord<int>> numberRecord
+
+        loadFromDatabaseWithMapping<GenericRecord<int>, GenericRecord<int>> id
+        |> checkResultSuccess number
+
+    [<Property>]
+    let ``Handles saving and loading with mapping with id correctly`` (number: int) =
+        let numberRecord = wrapInRecord number
+
+        cleanUpDatabase()
+
+        saveToDatabaseWithMapping<GenericRecord<int>, GenericRecord<int>> id numberRecord
+
+        loadFromDatabaseWithMapping<GenericRecord<int>, GenericRecord<int>> id
+        |> checkResultSuccess number
+
+    [<Property>]
+    let ``Handles saving and loading with mapping with wrapping correctly`` (number: int) =
+        cleanUpDatabase()
+
+        saveToDatabaseWithMapping<GenericRecord<int>, int> wrapInRecord number
+
+        loadFromDatabaseWithMapping<GenericRecord<int>, int> (fun x -> x.value)
+        |> function
+            | Ok read ->
+                if read = number then
+                    true
+                else
+                    printfn "Expected: %A - Got: %A" number read
+                    false
+            | Error error ->
+                printfn "Error: %A" error
+                false
+
+    [<Property>]
+    let ``Handles saving and loading with mapping with +-1 correctly`` (number: int) =
+        cleanUpDatabase()
+
+        saveToDatabaseWithMapping<GenericRecord<int>, int> ((+) 1 >> wrapInRecord) number
+
+        loadFromDatabaseWithMapping<GenericRecord<int>, int> ((fun x -> x.value) >> (-) 1)
+        |> function
+            | Ok read ->
+                if read = number then
+                    true
+                else
+                    printfn "Expected: %A - Got: %A" number read
+                    false
+            | Error error ->
+                printfn "Error: %A" error
+                false
