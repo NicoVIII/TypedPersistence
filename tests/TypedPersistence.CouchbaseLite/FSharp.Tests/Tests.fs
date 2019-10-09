@@ -48,6 +48,9 @@ module ``Saving and loading tests`` =
         simplePropertyTest<string> text
 
     [<Property>]
+    let ``Handles floats correctly`` (number: float) = simplePropertyTest<float> number
+
+    [<Property>]
     let ``Handles option strings correctly`` (textOption: Option<NonNull<string>>) =
         let text =
             match textOption with
