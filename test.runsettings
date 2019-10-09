@@ -5,7 +5,7 @@
       <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
           <Format>opencover</Format>
-          <Exclude>[*]*.Helpers*,[*]*YoLo*</Exclude>
+          <Exclude>[*]*.Helpers*,[*]*YoLo*,[*]*Types</Exclude>
         </Configuration>
       </DataCollector>
     </DataCollectors>
