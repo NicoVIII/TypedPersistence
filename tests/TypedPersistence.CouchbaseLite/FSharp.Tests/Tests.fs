@@ -20,18 +20,27 @@ module ``Saving and loading tests`` =
         use db = openDatabase ()
         db.Delete()
 
-    let genericPropertyTest<'a when 'a : equality> (data: 'a) =
+    let saveToDatabase data =
+        use db = openDatabase ()
+        saveDocument db documentName data
+        db.Close ()
+
+    let loadFromDatabase<'a> () =
+        use db = openDatabase ()
+        let result = loadDocument<'a> db documentName
+        db.Close()
+        result
+
+    let genericPropertyTest<'a when 'a : equality> setUp (data: 'a) =
         let dataRecord = { GenericRecord.value = data }
 
         cleanUpDatabase ()
 
-        use db = openDatabase ()
-        saveDocument db documentName dataRecord
-        db.Close ()
+        setUp dataRecord
 
-        use db = openDatabase ()
-        let result = loadDocument<GenericRecord<'a>> db documentName
-        db.Close()
+        saveToDatabase dataRecord
+
+        let result = loadFromDatabase<GenericRecord<'a>> ()
 
         match result with
         | Ok record ->
@@ -43,6 +52,9 @@ module ``Saving and loading tests`` =
         | Error error ->
             printfn "Error: %A" error
             false
+
+    let simplePropertyTest<'a when 'a : equality> (data: 'a) =
+        genericPropertyTest ignore data
 
     (*[<Fact>]
     let ``Fails to load unexisting document`` () =
@@ -71,13 +83,17 @@ module ``Saving and loading tests`` =
 
     [<Property>]
     let ``Handles ints correctly`` (number: int) =
-        genericPropertyTest<int> number
+        simplePropertyTest<int> number
+
+    [<Property>]
+    let ``Handles double saving correctly`` (number: int) =
+        genericPropertyTest<int> saveToDatabase number
 
     [<Property>]
     let ``Handles strings correctly`` (text: NonNull<string>) =
         let text = text.Get
 
-        genericPropertyTest<string> text
+        simplePropertyTest<string> text
 
     [<Property>]
     let ``Handles option strings correctly`` (textOption: Option<NonNull<string>>) =
@@ -86,35 +102,37 @@ module ``Saving and loading tests`` =
             | Some text -> Some text.Get
             | None -> None
 
-        genericPropertyTest<string option> text
+        simplePropertyTest<string option> text
 
     [<Property>]
     let ``Handles option ints correctly`` (numberOption: Option<int>) =
-        genericPropertyTest<int option> numberOption
+        simplePropertyTest<int option> numberOption
 
-    // Does not work for now... :(
     [<Property>]
     let ``Handles int list correctly`` (numberList: int list) =
-        genericPropertyTest<int list> numberList
+        simplePropertyTest<int list> numberList
 
-    // Does not work for now... :(
     [<Property>]
     let ``Handles string list correctly`` (textList: NonNull<string> list) =
         textList
         |> List.map (fun x -> x.Get)
-        |> genericPropertyTest<string list>
+        |> simplePropertyTest<string list>
 
     [<Property>]
     let ``Handles int record correctly`` (numberRecord: GenericRecord<int>) =
-        genericPropertyTest<GenericRecord<int>> numberRecord
+        simplePropertyTest<GenericRecord<int>> numberRecord
 
     [<Property>]
     let ``Handles string record correctly`` (textRecord: GenericRecord<NonNull<string>>) =
         { value = textRecord.value.Get }
-        |> genericPropertyTest<GenericRecord<string>>
+        |> simplePropertyTest<GenericRecord<string>>
 
     [<Property>]
     let ``Handles int option, string record2 correctly`` (record: GenericRecord2<int option, NonNull<string>>) =
         let record = { value1 = record.value1; value2 = record.value2.Get }
 
-        genericPropertyTest<GenericRecord2<int option, string>> record
+        simplePropertyTest<GenericRecord2<int option, string>> record
+
+    [<Property>]
+    let ``Handles int record list correctly`` (numberRecordList: GenericRecord<int> list) =
+        simplePropertyTest<GenericRecord<int> list> numberRecordList
