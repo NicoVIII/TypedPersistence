@@ -151,7 +151,7 @@ module ``Saving and loading tests`` =
 
         saveToDatabaseWithMapping<GenericRecord<int>, int> ((+) 1 >> wrapInRecord) number
 
-        loadFromDatabaseWithMapping<GenericRecord<int>, int> ((fun x -> x.value) >> (-) 1)
+        loadFromDatabaseWithMapping<GenericRecord<int>, int> ((fun x -> x.value) >> (+) -1)
         |> function
             | Ok read ->
                 if read = number then
