@@ -1,56 +1,57 @@
 namespace TypedPersistence.CouchbaseLite.FSharp.Tests
 
-open Couchbase.Lite
 open FsCheck
 open FsCheck.Xunit
-open TypedPersistence.CouchbaseLite.FSharp
+open FsUnit
+open Xunit
 
 module ``Saving and loading tests`` =
-    type GenericRecord<'a> = { value: 'a }
-    type GenericRecord2<'a, 'b> = { value1: 'a; value2: 'b }
-
     let documentName = "testdoc"
 
-    let openDatabase () =
-        new Database("testdb")
+    let saveToDatabase<'a> = saveToDatabase<'a> documentName
+    let loadFromDatabase<'a> () = loadFromDatabase<'a> documentName
+    let saveToDatabaseWithMapping<'a, 'b> = saveToDatabaseWithMapping<'a, 'b> documentName
+    let loadFromDatabaseWithMapping<'a, 'b> = loadFromDatabaseWithMapping<'a, 'b> documentName
+    let simplePropertyTest<'a when 'a : equality> = simplePropertyTest<'a> documentName
+    let genericPropertyTest<'a when 'a : equality> = genericPropertyTest<'a> documentName
 
-    let cleanUpDatabase () =
-        use db = openDatabase ()
-        db.Delete()
-
-    let genericTest<'a when 'a : equality> (data: 'a) =
-        let dataRecord = { GenericRecord.value = data }
-
+    [<Fact>]
+    let ``Fails to load unexisting document`` () =
         cleanUpDatabase ()
 
         use db = openDatabase ()
-        saveDocument db documentName dataRecord
-        db.Close ()
-
-        use db = openDatabase ()
-        let result = loadDocument<GenericRecord<'a>> db documentName
+        let result = loadFromDatabase<int> ()
         db.Close()
 
-        match result with
-        | Ok record ->
-            if record.value = data then
-                true
-            else
-                printfn "Expected: %A - Got: %A" data record.value
-                false
-        | Error error ->
-            printfn "Error: %A" error
-            false
+        result |> categorize
+        |> should equal DocumentNotExistingErrorCase
+
+    [<Fact>]
+    let ``Fails to load unexisting property`` () =
+        cleanUpDatabase ()
+
+        saveToDatabase { value1 = 0 }
+        let result = loadFromDatabase<GenericRecord<int>> ()
+
+        result |> categorize
+        |> should equal ValueNotExistingErrorCase
 
     [<Property>]
-    let ``Handles ints correctly`` (number: int) =
-        genericTest<int> number
+    let ``Handles ints correctly`` (number: int) = simplePropertyTest<int> number
+
+    [<Property>]
+    let ``Handles double saving correctly`` (number: int) = genericPropertyTest<int> saveToDatabase number
 
     [<Property>]
     let ``Handles strings correctly`` (text: NonNull<string>) =
         let text = text.Get
 
-        genericTest<string> text
+        simplePropertyTest<string> text
+
+    [<Property>]
+    let ``Handles floats correctly`` (number: NormalFloat) =
+        number.Get
+        |> simplePropertyTest<float>
 
     [<Property>]
     let ``Handles option strings correctly`` (textOption: Option<NonNull<string>>) =
@@ -59,35 +60,105 @@ module ``Saving and loading tests`` =
             | Some text -> Some text.Get
             | None -> None
 
-        genericTest<string option> text
+        simplePropertyTest<string option> text
 
     [<Property>]
-    let ``Handles option ints correctly`` (numberOption: Option<int>) =
-        genericTest<int option> numberOption
+    let ``Handles option ints correctly`` (numberOption: Option<int>) = simplePropertyTest<int option> numberOption
 
-    // Does not work for now... :(
     [<Property>]
-    let ``Handles int list correctly`` (numberList: int list) =
-        genericTest<int list> numberList
+    let ``Handles int list correctly`` (numberList: int list) = simplePropertyTest<int list> numberList
 
-    // Does not work for now... :(
     [<Property>]
     let ``Handles string list correctly`` (textList: NonNull<string> list) =
         textList
         |> List.map (fun x -> x.Get)
-        |> genericTest<string list>
+        |> simplePropertyTest<string list>
 
     [<Property>]
     let ``Handles int record correctly`` (numberRecord: GenericRecord<int>) =
-        genericTest<GenericRecord<int>> numberRecord
+        simplePropertyTest<GenericRecord<int>> numberRecord
 
     [<Property>]
     let ``Handles string record correctly`` (textRecord: GenericRecord<NonNull<string>>) =
-        { value = textRecord.value.Get }
-        |> genericTest<GenericRecord<string>>
+        { value = textRecord.value.Get } |> simplePropertyTest<GenericRecord<string>>
 
     [<Property>]
     let ``Handles int option, string record2 correctly`` (record: GenericRecord2<int option, NonNull<string>>) =
-        let record = { value1 = record.value1; value2 = record.value2.Get }
+        let record =
+            { value1 = record.value1
+              value2 = record.value2.Get }
 
-        genericTest<GenericRecord2<int option, string>> record
+        simplePropertyTest<GenericRecord2<int option, string>> record
+
+    [<Property>]
+    let ``Handles int record list correctly`` (numberRecordList: GenericRecord<int> list) =
+        simplePropertyTest<GenericRecord<int> list> numberRecordList
+
+    [<Property>]
+    let ``Handles saving with mapping with id correctly`` (number: int) =
+        let numberRecord = wrapInRecord number
+
+        cleanUpDatabase()
+
+        saveToDatabaseWithMapping<GenericRecord<int>, GenericRecord<int>> id numberRecord
+
+        loadFromDatabase<GenericRecord<int>> ()
+        |> checkResultSuccess number
+
+    [<Property>]
+    let ``Handles loading with mapping with id correctly`` (number: int) =
+        let numberRecord = wrapInRecord number
+
+        cleanUpDatabase()
+
+        saveToDatabase<GenericRecord<int>> numberRecord
+
+        loadFromDatabaseWithMapping<GenericRecord<int>, GenericRecord<int>> id
+        |> checkResultSuccess number
+
+    [<Property>]
+    let ``Handles saving and loading with mapping with id correctly`` (number: int) =
+        let numberRecord = wrapInRecord number
+
+        cleanUpDatabase()
+
+        saveToDatabaseWithMapping<GenericRecord<int>, GenericRecord<int>> id numberRecord
+
+        loadFromDatabaseWithMapping<GenericRecord<int>, GenericRecord<int>> id
+        |> checkResultSuccess number
+
+    [<Property>]
+    let ``Handles saving and loading with mapping with wrapping correctly`` (number: int) =
+        cleanUpDatabase()
+
+        saveToDatabaseWithMapping<GenericRecord<int>, int> wrapInRecord number
+
+        loadFromDatabaseWithMapping<GenericRecord<int>, int> (fun x -> x.value)
+        |> function
+            | Ok read ->
+                if read = number then
+                    true
+                else
+                    printfn "Expected: %A - Got: %A" number read
+                    false
+            | Error error ->
+                printfn "Error: %A" error
+                false
+
+    [<Property>]
+    let ``Handles saving and loading with mapping with +-1 correctly`` (number: int) =
+        cleanUpDatabase()
+
+        saveToDatabaseWithMapping<GenericRecord<int>, int> ((+) 1 >> wrapInRecord) number
+
+        loadFromDatabaseWithMapping<GenericRecord<int>, int> ((fun x -> x.value) >> (+) -1)
+        |> function
+            | Ok read ->
+                if read = number then
+                    true
+                else
+                    printfn "Expected: %A - Got: %A" number read
+                    false
+            | Error error ->
+                printfn "Error: %A" error
+                false
