@@ -2,7 +2,6 @@ Couchbase.Lite
 coverlet.collector
 FsCheck
 FsCheck.Xunit
-FSharp.Core
 FsUnit.xUnit
 Microsoft.NET.Test.Sdk
 xunit
