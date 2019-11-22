@@ -12,7 +12,7 @@ jobs:
       with:
         fetch-depth: 1
     - name: Build library
-      run: ./build.sh
+      run: dotnet tool restore && dotnet paket restore && dotnet fake build
     - name: Run tests
       run: dotnet test -s test.runsettings -r TestResults
     - name: Upload coverage report

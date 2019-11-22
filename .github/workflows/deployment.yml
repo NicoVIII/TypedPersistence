@@ -25,8 +25,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./Set-NuGetCredentials -ConfigFile ./nuget.config -Source "gpr" -Username NicoVIII -Password $env:GITHUB_TOKEN
       - name: Add version and pack
-        shell: pwsh
-        run: ./pack -Version ${{ steps.get_version.outputs.VERSION }}
+        run: dotnet tool restore && dotnet paket restore && dotnet fake run build.fsx -e VERSION=${{ steps.get_version.outputs.VERSION }} target Pack
       - name: Push to GitHub Registry
         run: dotnet nuget push TypedPersistence.CouchbaseLite.${{ steps.get_version.outputs.VERSION }}.nupkg -s "gpr"
       - name: Push to Nuget
