@@ -9,4 +9,6 @@ $projectFile = "src/TypedPersistence.CouchbaseLite/FSharp/TypedPersistence.Couch
 (Get-Content $projectFile).replace('</Version>-->', '</Version>') | Set-Content $projectFile
 
 # Pack as NugetPackage
+dotnet tool restore
+dotnet paket restore
 dotnet pack src/TypedPersistence.CouchbaseLite/FSharp -c Release -o ../../..
