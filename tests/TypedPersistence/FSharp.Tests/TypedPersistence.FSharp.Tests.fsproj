@@ -6,7 +6,7 @@
     <GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../../src/TypedPersistence.CouchbaseLite/FSharp/TypedPersistence.CouchbaseLite.FSharp.fsproj" />
+    <ProjectReference Include="../../../src/TypedPersistence/FSharp/TypedPersistence.FSharp.fsproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Types.fs" />
