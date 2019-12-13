@@ -1,7 +1,12 @@
-namespace TypedPersistence.CouchbaseLite.FSharp
+namespace TypedPersistence.FSharp
 
 [<AutoOpen>]
 module Types =
+    type GenericEntry<'T> =
+        {
+            id: string
+            entry: 'T
+        }
+
     type LoadError =
-        | ValueNotExisting of string
-        | DocumentNotExisting of string
+    | DocumentNotExisting

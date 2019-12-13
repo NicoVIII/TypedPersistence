@@ -1,45 +1,32 @@
-namespace TypedPersistence.CouchbaseLite.FSharp.Tests
+namespace TypedPersistence.FSharp.Tests
 
-open Couchbase.Lite
-open TypedPersistence.CouchbaseLite.FSharp
+open LiteDB
+open System.IO
+open TypedPersistence.FSharp
 
 [<AutoOpen>]
 module Functions =
-    let openDatabase() = new Database("testdb")
+    let dbName = "testdb"
+    let openDatabase() = new LiteDatabase(dbName)
 
     let cleanUpDatabase() =
-        use db = openDatabase ()
-        db.Delete ()
+        File.Delete(dbName + ".db")
 
-    let saveToDatabase<'a> documentName (data: 'a) =
+    let saveToDatabase<'a> (data: 'a) =
         use db = openDatabase()
-        saveDocument db documentName data
-        db.Close()
+        saveDocument<'a> db data
 
-    let loadFromDatabase<'a> documentName =
+    let loadFromDatabase<'a> () =
         use db = openDatabase()
-        let result = loadDocument<'a> db documentName
-        db.Close()
-        result
+        loadDocument<'a> db
 
-    let saveToDatabaseWithMapping<'a, 'b> documentName mapping (data: 'b) =
+    let saveToDatabaseWithMapping<'a, 'b> mapping (data: 'b) =
         use db = openDatabase()
-        saveDocumentWithMapping<'a, 'b> mapping db documentName data
-        db.Close()
+        saveDocumentWithMapping<'a, 'b> mapping db data
 
-    let loadFromDatabaseWithMapping<'a, 'b> documentName mapping =
+    let loadFromDatabaseWithMapping<'a, 'b> mapping =
         use db = openDatabase()
-        let result = loadDocumentWithMapping<'a, 'b> mapping db documentName
-        db.Close()
-        result
-
-    let categorize result =
-        match result with
-        | Ok _ -> OkCase
-        | Error error ->
-            match error with
-            | DocumentNotExisting _ -> DocumentNotExistingErrorCase
-            | ValueNotExisting _ -> ValueNotExistingErrorCase
+        loadDocumentWithMapping<'a, 'b> mapping db
 
     let wrapInRecord data =
         { GenericRecord.value = data }
@@ -56,16 +43,16 @@ module Functions =
             printfn "Error: %A" error
             false
 
-    let genericPropertyTest<'a when 'a: equality> documentName setUp (data: 'a) =
+    let genericPropertyTest<'a when 'a: equality> setUp (data: 'a) =
         let dataRecord = wrapInRecord data
 
         cleanUpDatabase()
 
         setUp dataRecord
 
-        saveToDatabase documentName dataRecord
+        saveToDatabase dataRecord |> ignore
 
-        loadFromDatabase<GenericRecord<'a>> documentName
+        loadFromDatabase<GenericRecord<'a>> ()
         |> checkResultSuccess data
 
-    let simplePropertyTest<'a when 'a: equality> documentName (data: 'a) = genericPropertyTest<'a> documentName ignore data
+    let simplePropertyTest<'a when 'a: equality> (data: 'a) = genericPropertyTest<'a> ignore data

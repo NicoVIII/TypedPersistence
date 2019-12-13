@@ -1,46 +1,24 @@
-namespace TypedPersistence.CouchbaseLite.FSharp.Tests
+namespace TypedPersistence.FSharp.Tests
 
 open FsCheck
 open FsCheck.Xunit
 open FsUnit
+open TypedPersistence.FSharp
 open Xunit
 
 module ``Saving and loading tests`` =
-    let documentName = "testdoc"
-
-    let saveToDatabase<'a> = saveToDatabase<'a> documentName
-    let loadFromDatabase<'a> () = loadFromDatabase<'a> documentName
-    let saveToDatabaseWithMapping<'a, 'b> = saveToDatabaseWithMapping<'a, 'b> documentName
-    let loadFromDatabaseWithMapping<'a, 'b> = loadFromDatabaseWithMapping<'a, 'b> documentName
-    let simplePropertyTest<'a when 'a : equality> = simplePropertyTest<'a> documentName
-    let genericPropertyTest<'a when 'a : equality> = genericPropertyTest<'a> documentName
-
     [<Fact>]
     let ``Fails to load unexisting document`` () =
         cleanUpDatabase ()
 
-        use db = openDatabase ()
-        let result = loadFromDatabase<int> ()
-        db.Close()
-
-        result |> categorize
-        |> should equal DocumentNotExistingErrorCase
-
-    [<Fact>]
-    let ``Fails to load unexisting property`` () =
-        cleanUpDatabase ()
-
-        saveToDatabase { value1 = 0 }
-        let result = loadFromDatabase<GenericRecord<int>> ()
-
-        result |> categorize
-        |> should equal ValueNotExistingErrorCase
+        loadFromDatabase<int> ()
+        |> should equal DocumentNotExisting
 
     [<Property>]
     let ``Handles ints correctly`` (number: int) = simplePropertyTest<int> number
 
     [<Property>]
-    let ``Handles double saving correctly`` (number: int) = genericPropertyTest<int> saveToDatabase number
+    let ``Handles double saving correctly`` (number: int) = genericPropertyTest<int> (saveToDatabase<GenericRecord<int>> >> ignore) number
 
     [<Property>]
     let ``Handles strings correctly`` (text: NonNull<string>) =
@@ -100,7 +78,7 @@ module ``Saving and loading tests`` =
 
         cleanUpDatabase()
 
-        saveToDatabaseWithMapping<GenericRecord<int>, GenericRecord<int>> id numberRecord
+        saveToDatabaseWithMapping<GenericRecord<int>, GenericRecord<int>> id numberRecord |> ignore
 
         loadFromDatabase<GenericRecord<int>> ()
         |> checkResultSuccess number
@@ -111,7 +89,7 @@ module ``Saving and loading tests`` =
 
         cleanUpDatabase()
 
-        saveToDatabase<GenericRecord<int>> numberRecord
+        saveToDatabase<GenericRecord<int>> numberRecord |> ignore
 
         loadFromDatabaseWithMapping<GenericRecord<int>, GenericRecord<int>> id
         |> checkResultSuccess number
@@ -122,7 +100,7 @@ module ``Saving and loading tests`` =
 
         cleanUpDatabase()
 
-        saveToDatabaseWithMapping<GenericRecord<int>, GenericRecord<int>> id numberRecord
+        saveToDatabaseWithMapping<GenericRecord<int>, GenericRecord<int>> id numberRecord |> ignore
 
         loadFromDatabaseWithMapping<GenericRecord<int>, GenericRecord<int>> id
         |> checkResultSuccess number
@@ -131,7 +109,7 @@ module ``Saving and loading tests`` =
     let ``Handles saving and loading with mapping with wrapping correctly`` (number: int) =
         cleanUpDatabase()
 
-        saveToDatabaseWithMapping<GenericRecord<int>, int> wrapInRecord number
+        saveToDatabaseWithMapping<GenericRecord<int>, int> wrapInRecord number |> ignore
 
         loadFromDatabaseWithMapping<GenericRecord<int>, int> (fun x -> x.value)
         |> function
@@ -149,7 +127,7 @@ module ``Saving and loading tests`` =
     let ``Handles saving and loading with mapping with +-1 correctly`` (number: int) =
         cleanUpDatabase()
 
-        saveToDatabaseWithMapping<GenericRecord<int>, int> ((+) 1 >> wrapInRecord) number
+        saveToDatabaseWithMapping<GenericRecord<int>, int> ((+) 1 >> wrapInRecord) number |> ignore
 
         loadFromDatabaseWithMapping<GenericRecord<int>, int> ((fun x -> x.value) >> (+) -1)
         |> function

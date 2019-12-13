@@ -3,6 +3,7 @@ coverlet.collector
 FsCheck
 FsCheck.Xunit
 FsUnit.xUnit
+LiteDB.FSharp
 Microsoft.NET.Test.Sdk
 xunit
 xunit.runner.console
