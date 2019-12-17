@@ -1,13 +1,14 @@
 namespace TypedPersistence.FSharp.Tests
 
 open LiteDB
+open LiteDB.FSharp
 open System.IO
 open TypedPersistence.FSharp
 
 [<AutoOpen>]
 module Functions =
     let dbName = "testdb"
-    let openDatabase() = new LiteDatabase(dbName)
+    let openDatabase() = new LiteDatabase(dbName, FSharpBsonMapper())
 
     let cleanUpDatabase() =
         File.Delete(dbName + ".db")
