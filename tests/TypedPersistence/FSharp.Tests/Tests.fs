@@ -64,6 +64,12 @@ let tests = testList "Saving and loading tests" [
     testProp "Handles int record list correctly"
         <| simplePropertyTest<GenericRecord<int> list>
 
+    testProp "Handles int list record correctly"
+        <| simplePropertyTest<GenericRecord<int list>>
+
+    testProp "Handles int list record record correctly"
+        <| simplePropertyTest<GenericRecord<GenericRecord<int list>>>
+
     testProp "Handles saving with mapping with id correctly"
         <| fun (number: int) ->
             let dbName = generateDatabaseName number
