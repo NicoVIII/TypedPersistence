@@ -23,4 +23,4 @@ jobs:
       - name: Add version and pack
         run: dotnet tool restore && dotnet paket restore && dotnet fake run build.fsx -e VERSION=${{ steps.get_version.outputs.VERSION }} target Pack
       - name: Push to Nuget
-        run: dotnet nuget push TypedPersistence.CouchbaseLite.${{ steps.get_version.outputs.VERSION }}.nupkg -k ${{ secrets.nugetapikey }} -s "nuget"
+        run: dotnet nuget push TypedPersistence.${{ steps.get_version.outputs.VERSION }}.nupkg -k ${{ secrets.nugetapikey }} -s "nuget"
