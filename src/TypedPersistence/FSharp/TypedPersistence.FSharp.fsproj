@@ -2,13 +2,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageId>TypedPersistence.CouchbaseLite</PackageId>
+    <PackageId>TypedPersistence</PackageId>
     <Version>0.1.1</Version>
     <Authors>NicoVIII</Authors>
     <Company>NicoVIII</Company>
-    <PackageTags>CouchbaseLite,Typesafety,F#</PackageTags>
+    <PackageTags>Persistence,Typesafety,F#</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/NicoVIII/TypedPersistence-for-CouchbaseLite</RepositoryUrl>
+    <RepositoryUrl>https://github.com/NicoVIII/TypedPersistence</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="YoLo.fs" />

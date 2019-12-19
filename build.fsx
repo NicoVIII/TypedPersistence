@@ -11,8 +11,8 @@ open Fake.Core
 open System.IO
 
 // Properties
-let projectPath = "./src/TypedPersistence.CouchbaseLite/FSharp/"
-let projectFile = "TypedPersistence.CouchbaseLite.FSharp.fsproj"
+let projectPath = "./src/TypedPersistence/FSharp/"
+let projectFile = "TypedPersistence.FSharp.fsproj"
 let projectFilePath = Path.Combine(projectPath, projectFile)
 
 let forDebug (options:DotNet.BuildOptions) =

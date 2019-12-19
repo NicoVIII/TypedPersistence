@@ -1,4 +1,4 @@
-namespace TypedPersistence.CouchbaseLite.FSharp.Tests
+namespace TypedPersistence.FSharp.Tests
 
 [<AutoOpen>]
 module Types =

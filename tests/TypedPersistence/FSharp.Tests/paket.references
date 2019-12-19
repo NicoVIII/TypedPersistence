@@ -1,0 +1,7 @@
+coverlet.collector
+FsCheck
+Expecto
+Expecto.FsCheck
+LiteDB.FSharp
+YoloDev.Expecto.TestSdk
+Microsoft.NET.Test.Sdk
