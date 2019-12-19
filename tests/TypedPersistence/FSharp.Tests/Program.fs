@@ -1,1 +1,7 @@
-module Program = let [<EntryPoint>] main _ = 0
+module TypedPersistence.FSharp.Tests.Main
+
+open Expecto
+
+[<EntryPoint>]
+let main argv =
+    runTestsInAssembly defaultConfig argv

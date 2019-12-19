@@ -1,59 +1,49 @@
 namespace TypedPersistence.FSharp.Tests
 
+open Expecto
 open LiteDB
-open LiteDB.FSharp
 open System.IO
 open TypedPersistence.FSharp
 
 [<AutoOpen>]
+module Auto =
+    let private config =
+        FsCheckConfig.defaultConfig
+        |> fun config -> { config with maxTest = 100 }
+    let testProp name = testPropertyWithConfig config name
+    let ptestProp name = ptestPropertyWithConfig config name
+    let ftestProp name = ftestPropertyWithConfig config name
+    let etestProp stdgen name = etestPropertyWithConfig stdgen config name
+
+[<AutoOpen>]
 module Functions =
-    let dbName = "testdb"
-    let openDatabase() = new LiteDatabase(dbName, FSharpBsonMapper())
+    let wrapInRecord value = { GenericRecord.value = value }
 
-    let cleanUpDatabase() =
-        File.Delete(dbName + ".db")
-
-    let saveToDatabase<'a> (data: 'a) =
-        use db = openDatabase()
-        saveDocument<'a> db data
-
-    let loadFromDatabase<'a> () =
-        use db = openDatabase()
-        loadDocument<'a> db
-
-    let saveToDatabaseWithMapping<'a, 'b> mapping (data: 'b) =
-        use db = openDatabase()
-        saveDocumentWithMapping<'a, 'b> mapping db data
-
-    let loadFromDatabaseWithMapping<'a, 'b> mapping =
-        use db = openDatabase()
-        loadDocumentWithMapping<'a, 'b> mapping db
-
-    let wrapInRecord data =
-        { GenericRecord.value = data }
+    let generateDatabaseName data = data |> hash |> string |> fun name -> "test_" + name + ".db"
+    let openDatabase (name: string) = new LiteDatabase(name, FSharpBsonMapperWithGenerics())
 
     let checkResultSuccess data result =
         match result with
-        | Ok record ->
-            if record.value = data then
+        | Ok result ->
+            if result = data then
                 true
             else
-                printfn "Expected: %A - Got: %A" data record.value
+                printfn "Expected: %A - Got: %A" data result
                 false
         | Error error ->
             printfn "Error: %A" error
             false
 
     let genericPropertyTest<'a when 'a: equality> setUp (data: 'a) =
-        let dataRecord = wrapInRecord data
+        let dbName = generateDatabaseName data
+        use db = openDatabase dbName
 
-        cleanUpDatabase()
+        setUp db data
 
-        setUp dataRecord
+        saveDocument db data |> ignore
 
-        saveToDatabase dataRecord |> ignore
-
-        loadFromDatabase<GenericRecord<'a>> ()
+        loadDocument<'a> db
+        |> (fun a -> db.Dispose(); File.Delete(dbName); a)
         |> checkResultSuccess data
 
-    let simplePropertyTest<'a when 'a: equality> (data: 'a) = genericPropertyTest<'a> ignore data
+    let simplePropertyTest<'a when 'a: equality> (data: 'a) = genericPropertyTest<'a> (fun _ _ -> ()) data

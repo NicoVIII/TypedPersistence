@@ -5,6 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug Test",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "type": "coreclr",
+            "program": "${workspaceRoot}/tests/TypedPersistence/FSharp.Tests/bin/Debug/netcoreapp3.1/TypedPersistence.FSharp.Tests.dll",
+            "args": [],
+            "cwd": "${workspaceRoot}/tests/TypedPersistence/FSharp.Tests",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
+        {
             "name": "Test Attach",
             "type": "coreclr",
             "request": "attach",

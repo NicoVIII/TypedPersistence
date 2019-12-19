@@ -1,10 +1,7 @@
-Couchbase.Lite
 coverlet.collector
 FsCheck
-FsCheck.Xunit
-FsUnit.xUnit
+Expecto
+Expecto.FsCheck
 LiteDB.FSharp
+YoloDev.Expecto.TestSdk
 Microsoft.NET.Test.Sdk
-xunit
-xunit.runner.console
-xunit.runner.visualstudio

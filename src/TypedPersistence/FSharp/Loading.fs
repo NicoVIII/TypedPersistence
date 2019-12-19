@@ -4,7 +4,6 @@ open LiteDB
 open LiteDB.FSharp.Extensions
 open TypedPersistence.FSharp
 
-// TODO: Think about wrapping Couchbase functions to use Option types
 [<AutoOpen>]
 module Loading =
     let loadDocument<'T> (database: LiteDatabase) =
