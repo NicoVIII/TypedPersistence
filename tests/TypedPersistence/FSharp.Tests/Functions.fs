@@ -9,7 +9,7 @@ open TypedPersistence.FSharp
 
 [<AutoOpen>]
 module Auto =
-    let private config = FsCheckConfig.defaultConfig |> fun config -> { config with maxTest = 500 }
+    let private config = FsCheckConfig.defaultConfig |> fun config -> { config with maxTest = 200 }
     let testProp name = testPropertyWithConfig config name
     let ptestProp name = ptestPropertyWithConfig config name
     let ftestProp name = ftestPropertyWithConfig config name
@@ -30,6 +30,8 @@ module Functions =
 
     let openDatabase (name: string) = new LiteDatabase(name, FSharpBsonMapperWithGenerics())
 
+    let cleanupDatabase dbName = File.Delete(dbName)
+
     let checkResultSuccess data result =
         match result with
         | Ok result ->
@@ -45,10 +47,10 @@ module Functions =
             logger.error (eventX "Error: {error}" >> setField "error" error)
             false
 
-    let genericPropertyTest<'a when 'a: equality> setUp (data: 'a) =
-        use db = openDatabase dbName
+    let simplePropertyTest<'a when 'a: equality> (data: 'a) =
+        cleanupDatabase dbName
 
-        setUp db data
+        use db = openDatabase dbName
 
         saveDocument db data |> ignore
 
@@ -58,5 +60,3 @@ module Functions =
             File.Delete(dbName)
             a)
         |> checkResultSuccess data
-
-    let simplePropertyTest<'a when 'a: equality> (data: 'a) = genericPropertyTest<'a> (fun _ _ -> ()) data
