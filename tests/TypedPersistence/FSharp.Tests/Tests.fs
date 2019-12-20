@@ -7,208 +7,159 @@ open System.IO
 
 [<Tests>]
 let tests =
-    testSequenced <| testList "Saving and loading tests"
-                         [ testCase "Fails to load unexisting document" <| fun _ ->
-                             cleanupDatabase dbName
+    testSequenced
+    <| testList "Saving and loading tests"
+           [ testCase "Fails to load unexisting document" <| fun _ ->
+               use db = openDatabase dbName
+               cleanupDatabase db
 
-                             use db = openDatabase dbName
+               loadDocument<int> db
+               |> Expect.equal
+               <| Error DocumentNotExisting
+               <| "Should throw error!"
 
-                             loadDocument<int> db
-                             |> Expect.equal
-                             <| Error DocumentNotExisting
-                             <| "Should throw error!"
+             testProp "Handles ints correctly" <| simplePropertyTest<int>
 
-                           testProp "Handles ints correctly" <| simplePropertyTest<int>
+             testProp "Handles double saving correctly" <| fun (number: int) ->
+                 use db = openDatabase dbName
+                 cleanupDatabase db
 
-                           testProp "Handles double saving correctly" <| fun (number: int) ->
-                               cleanupDatabase dbName
+                 saveDocument<int> db number |> ignore
 
-                               use db = openDatabase dbName
+                 saveDocument<int> db number |> ignore
 
-                               saveDocument<int> db number |> ignore
+                 loadDocument<int> db |> checkResultSuccess number
 
-                               saveDocument<int> db number |> ignore
+             testProp "Handles double loading correctly" <| fun (number: int) ->
+                 use db = openDatabase dbName
+                 cleanupDatabase db
 
-                               loadDocument<int> db
-                               |> (fun x ->
-                                   db.Dispose()
-                                   File.Delete(dbName)
-                                   x)
-                               |> checkResultSuccess number
+                 saveDocument<int> db number |> ignore
 
-                           testProp "Handles double loading correctly" <| fun (number: int) ->
-                               cleanupDatabase dbName
+                 loadDocument<int> db |> ignore
 
-                               use db = openDatabase dbName
+                 loadDocument<int> db |> checkResultSuccess number
 
-                               saveDocument<int> db number |> ignore
+             testProp "Handles double saving & loading correctly" <| fun (number: int) ->
+                 use db = openDatabase dbName
+                 cleanupDatabase db
 
-                               loadDocument<int> db |> ignore
+                 saveDocument<int> db number |> ignore
 
-                               loadDocument<int> db
-                               |> (fun x ->
-                                   db.Dispose()
-                                   File.Delete(dbName)
-                                   x)
-                               |> checkResultSuccess number
+                 saveDocument<int> db number |> ignore
 
-                           testProp "Handles double saving & loading correctly" <| fun (number: int) ->
-                               cleanupDatabase dbName
+                 loadDocument<int> db |> ignore
 
-                               use db = openDatabase dbName
+                 loadDocument<int> db |> checkResultSuccess number
 
-                               saveDocument<int> db number |> ignore
+             testProp "Handles multiple savings & loadings correctly" <| fun (number: int) ->
+                 use db = openDatabase dbName
+                 cleanupDatabase db
 
-                               saveDocument<int> db number |> ignore
+                 saveDocument<int> db number |> ignore
 
-                               loadDocument<int> db |> ignore
+                 let prevRes = loadDocument<int> db |> checkResultSuccess number
 
-                               loadDocument<int> db
-                               |> (fun x ->
-                                   db.Dispose()
-                                   cleanupDatabase dbName
-                                   x)
-                               |> checkResultSuccess number
+                 saveDocument<int> db number |> ignore
 
-                           testProp "Handles multiple savings & loadings correctly" <| fun (number: int) ->
-                               cleanupDatabase dbName
+                 loadDocument<int> db
+                 |> checkResultSuccess number
+                 |> (&&) prevRes
 
-                               use db = openDatabase dbName
+             testProp "Handles strings correctly"
+             <| fun (text: NonNull<string>) -> text.Get |> simplePropertyTest<string>
 
-                               saveDocument<int> db number |> ignore
+             testProp "Handles floats correctly" <| fun (number: NormalFloat) -> number.Get |> simplePropertyTest<float>
 
-                               let prevRes = loadDocument<int> db |> checkResultSuccess number
+             testProp "Handles option ints correctly" <| simplePropertyTest<int option>
 
-                               saveDocument<int> db number |> ignore
+             testProp "Handles option strings correctly" <| fun (textOption: Option<NonNull<string>>) ->
+                 let text =
+                     match textOption with
+                     | Some text -> Some text.Get
+                     | None -> None
+                 simplePropertyTest<string option> text
 
-                               loadDocument<int> db
-                               |> (fun x ->
-                                   db.Dispose()
-                                   cleanupDatabase dbName
-                                   x)
-                               |> checkResultSuccess number
-                               |> (&&) prevRes
+             testProp "Handles int list correctly" <| simplePropertyTest<int list>
 
-                           testProp "Handles strings correctly"
-                           <| fun (text: NonNull<string>) -> text.Get |> simplePropertyTest<string>
+             testProp "Handles string list correctly" <| fun (textList: NonNull<string> list) ->
+                 textList
+                 |> List.map (fun x -> x.Get)
+                 |> simplePropertyTest<string list>
 
-                           testProp "Handles floats correctly"
-                           <| fun (number: NormalFloat) -> number.Get |> simplePropertyTest<float>
+             testProp "Handles int record correctly" <| simplePropertyTest<GenericRecord<int>>
 
-                           testProp "Handles option ints correctly" <| simplePropertyTest<int option>
+             testProp "Handles string record correctly"
+             <| fun (textRecord: GenericRecord<NonNull<string>>) ->
+                 { value = textRecord.value.Get } |> simplePropertyTest<GenericRecord<string>>
 
-                           testProp "Handles option strings correctly" <| fun (textOption: Option<NonNull<string>>) ->
-                               let text =
-                                   match textOption with
-                                   | Some text -> Some text.Get
-                                   | None -> None
-                               simplePropertyTest<string option> text
+             testProp "Handles int option, string record2 correctly" <| fun (record: GenericRecord2<int option, NonNull<string>>) ->
+                 let record =
+                     { value1 = record.value1
+                       value2 = record.value2.Get }
 
-                           testProp "Handles int list correctly" <| simplePropertyTest<int list>
+                 simplePropertyTest<GenericRecord2<int option, string>> record
 
-                           testProp "Handles string list correctly" <| fun (textList: NonNull<string> list) ->
-                               textList
-                               |> List.map (fun x -> x.Get)
-                               |> simplePropertyTest<string list>
+             testProp "Handles int record list correctly" <| simplePropertyTest<GenericRecord<int> list>
 
-                           testProp "Handles int record correctly" <| simplePropertyTest<GenericRecord<int>>
+             testProp "Handles int list record correctly" <| simplePropertyTest<GenericRecord<int list>>
 
-                           testProp "Handles string record correctly"
-                           <| fun (textRecord: GenericRecord<NonNull<string>>) ->
-                               { value = textRecord.value.Get } |> simplePropertyTest<GenericRecord<string>>
+             testProp "Handles int list record record correctly"
+             <| simplePropertyTest<GenericRecord<GenericRecord<int list>>>
 
-                           testProp "Handles int option, string record2 correctly" <| fun (record: GenericRecord2<int option, NonNull<string>>) ->
-                               let record =
-                                   { value1 = record.value1
-                                     value2 = record.value2.Get }
+             testProp "Handles single case union type correctly" <| simplePropertyTest<SingleCaseUnion>
 
-                               simplePropertyTest<GenericRecord2<int option, string>> record
+             testProp "Handles single case int union type correctly" <| simplePropertyTest<SingleCaseIntUnion>
 
-                           testProp "Handles int record list correctly" <| simplePropertyTest<GenericRecord<int> list>
+             testProp "Handles single case int union type list correctly" <| simplePropertyTest<SingleCaseIntUnion list>
 
-                           testProp "Handles int list record correctly" <| simplePropertyTest<GenericRecord<int list>>
+             testProp "Handles single case int union type list option correctly"
+             <| simplePropertyTest<SingleCaseIntUnion option list>
 
-                           testProp "Handles int list record record correctly"
-                           <| simplePropertyTest<GenericRecord<GenericRecord<int list>>>
+             testProp "Handles complex record correctly"
+             <| simplePropertyTest<GenericRecord2<GenericRecord<int list>, GenericRecord<GenericRecord<SingleCaseIntUnion>> list>>
 
-                           testProp "Handles complex record correctly"
-                           <| simplePropertyTest<GenericRecord2<GenericRecord<int list>, GenericRecord<int> list>>
+             testProp "Handles saving with mapping with id correctly" <| fun (number: int) ->
+                 use db = openDatabase dbName
+                 cleanupDatabase db
 
-                           testProp "Handles single case union type correctly" <| simplePropertyTest<SingleCaseUnion>
+                 saveDocumentWithMapping<int, int> id db number |> ignore
 
-                           testProp "Handles single case int union type correctly"
-                           <| simplePropertyTest<SingleCaseIntUnion>
+                 loadDocument<int> db |> checkResultSuccess number
 
-                           testProp "Handles saving with mapping with id correctly" <| fun (number: int) ->
-                               cleanupDatabase dbName
+             testProp "Handles loading with mapping with id correctly" <| fun (number: int) ->
+                 use db = openDatabase dbName
+                 cleanupDatabase db
 
-                               use db = openDatabase dbName
+                 saveDocument<int> db number |> ignore
 
-                               saveDocumentWithMapping<int, int> id db number |> ignore
+                 loadDocumentWithMapping<int, int> id db |> checkResultSuccess number
 
-                               loadDocument<int> db
-                               |> (fun x ->
-                                   db.Dispose()
-                                   cleanupDatabase dbName
-                                   x)
-                               |> checkResultSuccess number
 
-                           testProp "Handles loading with mapping with id correctly" <| fun (number: int) ->
-                               cleanupDatabase dbName
+             testProp "Handles saving and loading with mapping with id correctly" <| fun (number: int) ->
+                 use db = openDatabase dbName
+                 cleanupDatabase db
 
-                               use db = openDatabase dbName
+                 saveDocumentWithMapping<int, int> id db number |> ignore
 
-                               saveDocument<int> db number |> ignore
+                 loadDocumentWithMapping<int, int> id db |> checkResultSuccess number
 
-                               loadDocumentWithMapping<int, int> id db
-                               |> (fun x ->
-                                   db.Dispose()
-                                   cleanupDatabase dbName
-                                   x)
-                               |> checkResultSuccess number
 
+             testProp "Handles saving and loading with mapping with wrapping correctly" <| fun (number: int) ->
+                 use db = openDatabase dbName
+                 cleanupDatabase db
 
-                           testProp "Handles saving and loading with mapping with id correctly" <| fun (number: int) ->
-                               cleanupDatabase dbName
+                 saveDocumentWithMapping<GenericRecord<int>, int> wrapInRecord db number |> ignore
 
-                               use db = openDatabase dbName
+                 loadDocumentWithMapping<GenericRecord<int>, int> (fun x -> x.value) db |> checkResultSuccess number
 
-                               saveDocumentWithMapping<int, int> id db number |> ignore
 
-                               loadDocumentWithMapping<int, int> id db
-                               |> (fun x ->
-                                   db.Dispose()
-                                   cleanupDatabase dbName
-                                   x)
-                               |> checkResultSuccess number
+             testProp "Handles saving and loading with mapping with +-1 correctly"
+             <| fun (number: int) ->
+                 use db = openDatabase dbName
+                 cleanupDatabase db
 
+                 saveDocumentWithMapping<GenericRecord<int>, int> ((+) 1 >> wrapInRecord) db number |> ignore
 
-                           testProp "Handles saving and loading with mapping with wrapping correctly" <| fun (number: int) ->
-                               cleanupDatabase dbName
-
-                               use db = openDatabase dbName
-
-                               saveDocumentWithMapping<GenericRecord<int>, int> wrapInRecord db number |> ignore
-
-                               loadDocumentWithMapping<GenericRecord<int>, int> (fun x -> x.value) db
-                               |> (fun x ->
-                                   db.Dispose()
-                                   cleanupDatabase dbName
-                                   x)
-                               |> checkResultSuccess number
-
-
-                           testProp "Handles saving and loading with mapping with +-1 correctly" <| fun (number: int) ->
-                               cleanupDatabase dbName
-
-                               use db = openDatabase dbName
-
-                               saveDocumentWithMapping<GenericRecord<int>, int> ((+) 1 >> wrapInRecord) db number
-                               |> ignore
-
-                               loadDocumentWithMapping<GenericRecord<int>, int> ((fun x -> x.value) >> (+) -1) db
-                               |> (fun x ->
-                                   db.Dispose()
-                                   cleanupDatabase dbName
-                                   x)
-                               |> checkResultSuccess number ]
+                 loadDocumentWithMapping<GenericRecord<int>, int> ((fun x -> x.value) >> (+) -1) db
+                 |> checkResultSuccess number ]

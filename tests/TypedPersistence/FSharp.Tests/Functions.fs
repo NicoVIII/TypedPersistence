@@ -30,7 +30,10 @@ module Functions =
 
     let openDatabase (name: string) = new LiteDatabase(name, FSharpBsonMapperWithGenerics())
 
-    let cleanupDatabase dbName = File.Delete(dbName)
+    let cleanupDatabase (db: LiteDatabase) =
+        db.GetCollectionNames()
+        |> List.ofSeq
+        |> List.iter (db.DropCollection >> ignore)
 
     let checkResultSuccess data result =
         match result with
@@ -48,15 +51,9 @@ module Functions =
             false
 
     let simplePropertyTest<'a when 'a: equality> (data: 'a) =
-        cleanupDatabase dbName
-
         use db = openDatabase dbName
+        cleanupDatabase db
 
         saveDocument db data |> ignore
 
-        loadDocument<'a> db
-        |> (fun a ->
-            db.Dispose()
-            File.Delete(dbName)
-            a)
-        |> checkResultSuccess data
+        loadDocument<'a> db |> checkResultSuccess data
