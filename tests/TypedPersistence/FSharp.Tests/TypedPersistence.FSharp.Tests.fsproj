@@ -13,7 +13,6 @@
     <Compile Include="Errors.fs" />
     <Compile Include="Process.fs" />
     <Compile Include="Datatypes.fs" />
-    <Compile Include="Mapping.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />

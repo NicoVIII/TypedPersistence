@@ -1,6 +1,7 @@
 namespace TypedPersistence.FSharp
 
 open FSharp.Reflection
+open LiteDB
 open System
 
 module Helpers =
@@ -52,3 +53,9 @@ module Helpers =
             | true -> someCase, [| v |]
             | false -> noneCase, [||]
         FSharpValue.MakeUnion(relevantCase, args)
+
+    let executeWithDatabaseSetup executeWithDatabase (path: string) =
+        use db = new LiteDatabase(path, FSharpBsonMapperWithGenerics())
+        let result = executeWithDatabase db
+        db.Dispose()
+        result

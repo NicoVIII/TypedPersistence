@@ -24,4 +24,5 @@ module Types =
         }
 
     type LoadError =
+    | DatabaseNotExisting
     | DocumentNotExisting

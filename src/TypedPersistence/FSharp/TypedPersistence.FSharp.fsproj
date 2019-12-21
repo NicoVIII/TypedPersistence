@@ -11,8 +11,8 @@
     <RepositoryUrl>https://github.com/NicoVIII/TypedPersistence</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Helper.fs" />
     <Compile Include="Types.fs" />
+    <Compile Include="Helper.fs" />
     <Compile Include="Saving.fs" />
     <Compile Include="Loading.fs" />
   </ItemGroup>
