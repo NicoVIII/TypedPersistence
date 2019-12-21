@@ -4,16 +4,23 @@ open LiteDB
 open LiteDB.FSharp.Extensions
 open TypedPersistence.FSharp
 
+open TypedPersistence.FSharp.Helpers
+
 [<AutoOpen>]
 module Loading =
-    let loadDocument<'T> (database: LiteDatabase) =
-        database.GetCollection<GenericEntry<'T>>().TryFindById(BsonValue("default"))
+    let loadDocumentWithId<'a> (database: LiteDatabase) (key: string) =
+        database.GetCollection<GenericEntry<'a>>().TryFindById(BsonValue(key))
         |> function
-        | Some document ->
-            Ok document.entry
-        | None ->
-            Error DocumentNotExisting
+        | Some document -> Ok document.entry
+        | None -> Error DocumentNotExisting
 
-    let loadDocumentWithMapping<'TPersistence, 'T> (mapping: 'TPersistence -> 'T) (database: LiteDatabase) =
-        loadDocument<'TPersistence> database
-        |> Result.map mapping
+    let loadDocumentWithIdFromDatabase<'a> (path: string) (key: string) =
+        let execute database = loadDocumentWithId database key
+        executeWithDatabaseSetup execute path
+
+    let loadDocument<'a> (database: LiteDatabase) =
+        loadDocumentWithId<'a> database "default"
+
+    let loadDocumentFromDatabase<'a> (path: string) =
+        let execute database = loadDocument database
+        executeWithDatabaseSetup execute path
