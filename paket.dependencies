@@ -1,10 +1,12 @@
 source https://api.nuget.org/v3/index.json
 
 nuget FSharp.Core > 4.5.2 lowest_matching: true, redirects: force
+
 nuget LiteDB.FSharp
 nuget coverlet.collector
 nuget Expecto
 nuget FsCheck
+nuget FSharpPlus
 nuget Expecto.FsCheck
 nuget YoloDev.Expecto.TestSdk
 nuget Microsoft.NET.Test.Sdk

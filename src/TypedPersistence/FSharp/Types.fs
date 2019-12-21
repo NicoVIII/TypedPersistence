@@ -2,8 +2,6 @@ namespace TypedPersistence.FSharp
 
 open LiteDB.FSharp
 open System
-open System.Security.Cryptography
-open System.Text
 
 [<AutoOpen>]
 module Types =
