@@ -2,6 +2,8 @@ namespace TypedPersistence.FSharp
 
 open LiteDB.FSharp
 open System
+open System.Security.Cryptography
+open System.Text
 
 [<AutoOpen>]
 module Types =
@@ -16,18 +18,23 @@ module Types =
                 |> List.map genericName
                 |> List.reduce (fun a b -> a + "," + b)
                 |> (+) (t.Name + "-")
-                |> hash
-                |> string
             else
                 resolveCollectionName.Invoke(t)
 
         do
             this.ResolveCollectionName <-
                 Func<Type, string>(fun t ->
-                    if t.IsGenericType then
-                        genericName t
-                    else
-                        resolveCollectionName.Invoke(t))
+                    use md5 = MD5.Create()
+                    let name =
+                        if t.IsGenericType then
+                            genericName t
+                            |> Encoding.ASCII.GetBytes
+                            |> md5.ComputeHash
+                            |> Array.map (fun (x : byte) -> String.Format("{0:X2}", x))
+                            |> String.concat String.Empty
+                        else
+                            resolveCollectionName.Invoke(t)
+                    name)
 
     type GenericEntry<'T> =
         { id: string
