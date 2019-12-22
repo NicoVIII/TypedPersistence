@@ -12,8 +12,8 @@ module Saving =
             ({ id = key
                entry = document })
         |> function
-        | true -> Ok()
-        | false -> Error()
+        | true -> Inserted
+        | false -> Updated
 
     let saveDocumentWithIdToDatabase<'a> (path: string) (key: string) (document: 'a) =
         let execute database = saveDocumentWithId database key document
