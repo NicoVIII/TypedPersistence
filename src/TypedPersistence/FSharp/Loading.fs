@@ -15,12 +15,12 @@ module Loading =
         | None -> Error DocumentNotExisting
 
     let loadDocumentWithIdFromDatabase<'a> (path: string) (key: string) =
-        let execute database = loadDocumentWithId database key
+        let execute database = loadDocumentWithId<'a> database key
         executeWithDatabaseSetup execute path
 
     let loadDocument<'a> (database: LiteDatabase) =
         loadDocumentWithId<'a> database "default"
 
     let loadDocumentFromDatabase<'a> (path: string) =
-        let execute database = loadDocument database
+        let execute database = loadDocument<'a> database
         executeWithDatabaseSetup execute path

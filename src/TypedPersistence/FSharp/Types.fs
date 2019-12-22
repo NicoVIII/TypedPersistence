@@ -36,9 +36,9 @@ module Types =
                             resolveCollectionName.Invoke(t)
                     name)
 
-    type GenericEntry<'T> =
+    type GenericEntry<'a> =
         { id: string
-          entry: 'T }
+          entry: 'a }
 
     type LoadError =
         | DatabaseNotExisting
