@@ -64,6 +64,8 @@ let tests =
              testProp "Handles single case int union type list option correctly"
              <| simplePropertyTest<SingleCaseIntUnion option list> dbName
 
+             testProp "Handles non generic record correctly" <| simplePropertyTest<NonGenericRecord2> dbName
+
              testProp "Handles complex record correctly"
              <| simplePropertyTest<GenericRecord2<GenericRecord<int list>, GenericRecord<GenericRecord<SingleCaseIntUnion>> list>>
                  dbName ]

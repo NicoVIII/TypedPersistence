@@ -20,6 +20,15 @@ module Types =
 
     type SingleCaseIntUnion = OnlyIntCase of int
 
+
+    type NonGenericRecord1 =
+        { value1: int
+          value2: string }
+
+    type NonGenericRecord2 =
+        { value1: NonGenericRecord1 option
+          value2: string }
+
     type GenericRecord<'a> =
         { value: 'a }
 
