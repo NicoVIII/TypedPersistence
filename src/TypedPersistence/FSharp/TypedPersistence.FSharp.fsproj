@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>TypedPersistence</PackageId>
-    <Version>0.4.1</Version>
+    <!--<Version>$version$</Version>-->
     <Authors>NicoVIII</Authors>
     <Company>NicoVIII</Company>
     <PackageTags>Persistence,Typesafety,F#</PackageTags>

@@ -40,6 +40,8 @@ module Types =
         { id: string
           entry: 'a }
 
+    type SavingResult = Inserted | Updated
+
     type LoadError =
         | DatabaseNotExisting
         | DocumentNotExisting
