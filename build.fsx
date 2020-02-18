@@ -18,8 +18,16 @@ let projectFilePath = Path.Combine(projectPath, projectFile)
 let forDebug (options:DotNet.BuildOptions) =
   { options with Configuration = DotNet.BuildConfiguration.Debug }
 
-let packOptions (options:DotNet.PackOptions) =
-  { options with OutputPath = Some __SOURCE_DIRECTORY__ }
+let forRelease (options:DotNet.BuildOptions) =
+  { options with Configuration = DotNet.BuildConfiguration.Release }
+
+let packOptions (options:Paket.PaketPackParams) =
+  { options with
+     BuildConfig = "Release"
+     OutputPath = __SOURCE_DIRECTORY__
+     ToolType = ToolType.CreateCLIToolReference(id) |> ToolType.withDefaultToolCommandName "paket"
+     WorkingDir = projectPath
+     }
 
 // Targets
 Target.create "Clean" (fun _ ->
@@ -33,7 +41,7 @@ Target.create "BuildApp" (fun _ ->
   DotNet.build forDebug projectPath
 )
 
-Target.create "Pack" (fun _ ->
+Target.create "ReplaceVersion" (fun _ ->
   // Replace version in project file
   let version = Environment.environVarOrFail "VERSION"
   let replacements = Seq.ofList [
@@ -43,8 +51,14 @@ Target.create "Pack" (fun _ ->
     ]
   let files = Seq.ofList [ projectFilePath ]
   Shell.replaceInFiles replacements files
+)
 
-  DotNet.pack packOptions projectPath
+Target.create "BuildPack" (fun _ ->
+  DotNet.build forRelease projectPath
+)
+
+Target.create "Pack" (fun _ ->
+  Paket.pack packOptions
 )
 
 // Dependencies
@@ -54,6 +68,8 @@ open Fake.Core.TargetOperators
   ==> "BuildApp"
 
 "Clean"
+  ==> "ReplaceVersion"
+  ==> "BuildPack"
   ==> "Pack"
 
 // start build
