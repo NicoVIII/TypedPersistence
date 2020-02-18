@@ -2,7 +2,8 @@ source https://api.nuget.org/v3/index.json
 
 nuget FSharp.Core > 4.5.2 lowest_matching: true, redirects: force
 
-nuget LiteDB.FSharp
+nuget LiteDB ~> 4.1
+nuget LiteDB.FSharp ~> 2.15
 nuget coverlet.collector
 nuget Expecto
 nuget FsCheck

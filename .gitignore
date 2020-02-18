@@ -347,3 +347,6 @@ appimagetool-x86_64.AppImage
 
 # Ionide Plugin VSCode
 .ionide
+
+# Expecto DBs
+test_*.db
