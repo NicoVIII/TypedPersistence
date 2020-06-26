@@ -1,7 +1,6 @@
 namespace TypedPersistence.FSharp
 
 open LiteDB
-open LiteDB.FSharp.Extensions
 open TypedPersistence.FSharp
 
 open TypedPersistence.FSharp.Helpers
@@ -9,10 +8,11 @@ open TypedPersistence.FSharp.Helpers
 [<AutoOpen>]
 module Loading =
     let loadDocumentWithId<'a> (database: LiteDatabase) (key: string) =
-        database.GetCollection<GenericEntry<'a>>().TryFindById(BsonValue(key))
-        |> function
-        | Some document -> Ok document.entry
-        | None -> Error DocumentNotExisting
+        let document = database.GetCollection<GenericEntry<'a>>().FindById(BsonValue(key))
+        if isNull document then
+            Error DocumentNotExisting
+        else
+            Ok document.entry
 
     let loadDocumentWithIdFromDatabase<'a> (path: string) (key: string) =
         let execute database = loadDocumentWithId<'a> database key

@@ -35,6 +35,8 @@ module Helpers =
                 CachingReflectiveListBuilder.builderMap := Map.add lType.FullName builder currentMap
                 builder
 
+    let inline isNull (x:^T when ^T : not struct) = obj.ReferenceEquals (x, null)
+
     let isOption (t: Type) = t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<Option<_>>
 
     let isList (t: Type) = t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<List<_>>
