@@ -17,6 +17,8 @@ module Types =
         { id: string
           entry: 'a }
 
+    // This stuff is a patched version of stuff from LiteDB.FSharp for LiteDB 5, I also provided as a PR
+    // I hope I can remove this once LiteDB.FSharp works with LiteDB 5
     [<AutoOpen>]
     module ReflectionAdapters =
         open System.Reflection
