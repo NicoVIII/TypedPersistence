@@ -8,7 +8,7 @@ open TypedPersistence.FSharp
 
 [<AutoOpen>]
 module Auto =
-    let private config = FsCheckConfig.defaultConfig |> fun config -> { config with maxTest = 200 }
+    let private config = FsCheckConfig.defaultConfig
     let testProp name = testPropertyWithConfig config name
     let ptestProp name = ptestPropertyWithConfig config name
     let ftestProp name = ftestPropertyWithConfig config name
@@ -19,7 +19,6 @@ module Types =
     type SingleCaseUnion = OnlyCase
 
     type SingleCaseIntUnion = OnlyIntCase of int
-
 
     type NonGenericRecord1 =
         { value1: int
@@ -33,6 +32,9 @@ module Types =
         { value: 'a }
 
     type GenericRecordAlt<'a> =
+        { value1: 'a }
+
+    type GenericRecordAlt2<'a> =
         { value1: 'a }
 
     type GenericRecord2<'a, 'b> =

@@ -579,18 +579,27 @@ module Types =
                 resolveCollectionName.Invoke(t)
                 |> removeInvalidChars
 
+        let resolveCollectionName (t: Type) =
+            if t.IsGenericType then
+                genericName t
+            else
+                resolveCollectionName.Invoke(t)
+                |> removeInvalidChars
+
         do
             this.ResolveCollectionName <-
                 Func<Type, string>(fun t ->
-                    let name =
-                        if t.IsGenericType then
-                            genericName t
-                        else
-                            resolveCollectionName.Invoke(t)
-                            |> removeInvalidChars
-                    name)
+                    let result =
+                        match this.FallbackFor with
+                        | Some t2 ->
+                            resolveCollectionName t2
+                        | None ->
+                            resolveCollectionName t
+                    result)
 
         let entityMappers = Dictionary<Type,EntityMapper>()
+
+        member val FallbackFor: Type option = None with get, set
 
         member this.DbRef<'T1,'T2> (exp: Expression<Func<'T1,'T2>>) =
             this.Entity<'T1>().DbRef(exp) |> ignore
