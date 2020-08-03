@@ -15,6 +15,13 @@ module Loading =
             database
         | _ -> failwith "Database does not use a supported mapper"
 
+    let resetFallback (database: LiteDatabase) =
+        match database.Mapper with
+        | :? FSharpBsonMapperWithGenerics as mapper ->
+            mapper.FallbackFor <- None
+            database
+        | _ -> failwith "Database does not use a supported mapper"
+
     let loadDocumentWithId<'a> (database: LiteDatabase) (key: string) =
         let document =
             database.GetCollection<GenericEntry<'a>>().FindById(BsonValue(key))
