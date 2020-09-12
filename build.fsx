@@ -20,7 +20,7 @@ open Fake.Api
 let project = "TypedPersistence"
 
 let summary =
-  "Simple library which should simplify safing and loading files"
+  "Simple library which should simplify saving and loading files"
 
 let authors = "NicoVIII"
 let tags = "Persistence,Typesafety,F#"
