@@ -1,5 +1,4 @@
 {
     "editor.formatOnSave": true,
-    "files.trimFinalNewlines": true,
-    "FSharp.useSdkScripts": true
+    "files.trimFinalNewlines": true
 }
