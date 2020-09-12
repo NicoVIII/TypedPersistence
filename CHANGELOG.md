@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.6.0-alpha.2]
+## [0.6.0-alpha.3]
 ### Changed
 - Changed from LiteDB to JSON as save file format
 
