@@ -1,10 +1,5 @@
 {
-    "files.watcherExclude": {
-        "**/.git/objects/**": true,
-        "**/.git/subtree-cache/**": true,
-        "**/node_modules/**": true,
-        "**/packages/**": true
-    },
-    //"editor.formatOnSave": true,
-    "files.trimFinalNewlines": true
+    "editor.formatOnSave": true,
+    "files.trimFinalNewlines": true,
+    "FSharp.useSdkScripts": true
 }
