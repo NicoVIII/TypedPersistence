@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.0.1]
+## [0.6.0-alpha.2]
+### Changed
+- Changed from LiteDB to JSON as save file format
+
+## [0.2.0] - 2019-12-19
+### Changed
+- Use LiteDB instead of CouchbaseLite
+
+## [0.1.1] - 2019-11-22
+### Changed
+- Workflow has now FAKE and Paket
+
+## [0.1.0] - 2019-10-07
 ### Added
-- Initial release
+- Basic functionality
