@@ -15,8 +15,8 @@ type SiteInfo =
     root_url: UrlRoot }
 
 let config =
-  { title = "Waypoint"
-    description = "Description of Waypoint project"
+  { title = "Typed Persistence"
+    description = "Description of TypedPersistence project"
     theme_variant = Some "blue"
     root_url =
 #if WATCH

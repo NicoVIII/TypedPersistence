@@ -13,6 +13,6 @@ let loader (projectRoot: string) (siteContent: SiteContents) =
        icon = "fas fa-home" })
   siteContent.Add
     ({ title = "GitHub repo"
-       link = "http://github.com/{GITOWNER}/Waypoint"
+       link = "http://github.com/NicoVIII/TypedPersistence"
        icon = "fab fa-github" })
   siteContent

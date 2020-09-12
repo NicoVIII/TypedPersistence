@@ -33,7 +33,7 @@ let rec collectModules pn pu nn nu (m: Module) =
 let loader (projectRoot: string) (siteContent: SiteContents) =
   try
     let dlls =
-      [ "Waypoint", Path.Combine(projectRoot, "..", "build", "Waypoint.dll") ]
+      [ "TypedPersistence", Path.Combine(projectRoot, "..", "build", "TypedPersistence.dll") ]
 
     let libs =
       [ Path.Combine(projectRoot, "..", "build") ]
