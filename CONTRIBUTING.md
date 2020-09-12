@@ -89,7 +89,7 @@ in order to craft an excellent pull request:
    # Navigate to the newly cloned directory
    cd TypedPersistence
    # Assign the original repo to a remote called "upstream"
-   git remote add upstream https://github.com/<project-username>/TypedPersistence
+   git remote add upstream https://github.com/NicoVIII/TypedPersistence
    ```
 
 2. If you cloned a while ago, get the latest changes from upstream, and update your fork:
@@ -122,7 +122,7 @@ in order to craft an excellent pull request:
 
    ```bash
    dotnet tool restore
-   dotnet tool build
+   dotnet fake build
    ```
 
 6. Push your topic branch up to your fork:

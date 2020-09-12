@@ -1,25 +1,32 @@
 #r "../_lib/Fornax.Core.dll"
 
-type SiteInfo = {
-    title: string
+type UrlRoot =
+  | Root of string
+  member x.subRoute(route: string) =
+    let (Root root) = x
+    root.TrimEnd('/') + "/" + route.TrimStart('/')
+
+  member x.subRoutef pattern = Printf.kprintf x.subRoute pattern
+
+type SiteInfo =
+  { title: string
     description: string
     theme_variant: string option
-    root_url: string
-}
+    root_url: UrlRoot }
 
-let config = {
-    title = "TypedPersistence"
-    description = "Description of TypedPersistence project"
+let config =
+  { title = "Waypoint"
+    description = "Description of Waypoint project"
     theme_variant = Some "blue"
     root_url =
-      #if WATCH
-        "http://localhost:8080/"
-      #else
-        "TODO: ADD_ROOT_LINK"
-      #endif
-}
+#if WATCH
+      Root "//localhost:8080/"
+#else
+      Root "{DOCSROOTLINK}"
+#endif
+  }
 
-let loader (projectRoot: string) (siteContet: SiteContents) =
-    siteContet.Add(config)
+let loader (projectRoot: string) (siteContent: SiteContents) =
+  siteContent.Add(config)
 
-    siteContet
+  siteContent

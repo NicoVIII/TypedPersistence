@@ -3,20 +3,27 @@
 open System.IO
 
 
-let loader (projectRoot: string) (siteContet: SiteContents) =
-    let intputPath = Path.Combine(projectRoot, "static")
-    let outputPath = Path.Combine(projectRoot, "_public", "static")
-    if Directory.Exists outputPath then Directory.Delete(outputPath, true)
-    Directory.CreateDirectory outputPath |> ignore
+let loader (projectRoot: string) (siteContent: SiteContents) =
+  let intputPath = Path.Combine(projectRoot, "static")
 
-    for dirPath in Directory.GetDirectories(intputPath, "*", SearchOption.AllDirectories) do
-        Directory.CreateDirectory(dirPath.Replace(intputPath, outputPath)) |> ignore
+  let outputPath =
+    Path.Combine(projectRoot, "_public", "static")
 
-    for filePath in Directory.GetFiles(intputPath, "*.*", SearchOption.AllDirectories) do
-        File.Copy(filePath, filePath.Replace(intputPath, outputPath), true)
+  if Directory.Exists outputPath then Directory.Delete(outputPath, true)
+  Directory.CreateDirectory outputPath |> ignore
 
-    let intputPath = Path.Combine(projectRoot, "index.html")
-    let outputPath = Path.Combine(projectRoot, "_public", "index.html")
-    File.Copy(intputPath, outputPath, true)
+  for dirPath in Directory.GetDirectories(intputPath, "*", SearchOption.AllDirectories) do
+    Directory.CreateDirectory(dirPath.Replace(intputPath, outputPath))
+    |> ignore
 
-    siteContet
+  for filePath in Directory.GetFiles(intputPath, "*.*", SearchOption.AllDirectories) do
+    File.Copy(filePath, filePath.Replace(intputPath, outputPath), true)
+
+  let intputPath = Path.Combine(projectRoot, "index.html")
+
+  let outputPath =
+    Path.Combine(projectRoot, "_public", "index.html")
+
+  File.Copy(intputPath, outputPath, true)
+
+  siteContent

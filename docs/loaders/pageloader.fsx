@@ -1,13 +1,18 @@
 #r "../_lib/Fornax.Core.dll"
 
 
-type Shortcut = {
-    title: string
+type Shortcut =
+  { title: string
     link: string
-    icon: string
-}
+    icon: string }
 
-let loader (projectRoot: string) (siteContet: SiteContents) =
-    siteContet.Add({title = "Home"; link = "/"; icon = "fas fa-home"})
-    siteContet.Add({title = "GitHub repo"; link = "TODO: ADD_LINK"; icon = "fab fa-github"})
-    siteContet
+let loader (projectRoot: string) (siteContent: SiteContents) =
+  siteContent.Add
+    ({ title = "Home"
+       link = "/"
+       icon = "fas fa-home" })
+  siteContent.Add
+    ({ title = "GitHub repo"
+       link = "http://github.com/{GITOWNER}/Waypoint"
+       icon = "fab fa-github" })
+  siteContent

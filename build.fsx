@@ -19,10 +19,12 @@ open Fake.Api
 
 let project = "TypedPersistence"
 
-let summary = "TODO: Add Summary"
+let summary =
+  "Simple library which should simplify safing and loading files"
+
 let authors = "NicoVIII"
-let tags = "TODO: Add package tags"
-let copyright = "TODO: Add copyright"
+let tags = "Persistence,Typesafety,F#"
+let copyright = ""
 
 let gitOwner = "NicoVIII"
 let gitName = "TypedPersistence"
@@ -35,7 +37,6 @@ let gitUrl = gitHome + "/" + gitName
 
 let buildDir = "./build/"
 let nugetDir = "./out/"
-
 
 System.Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 let changelogFilename = "CHANGELOG.md"
@@ -123,7 +124,6 @@ Target.create "Pack" (fun _ ->
       ("PackageReleaseNotes", packageReleaseNotes)
       ("PackageDescription", summary)
       ("EnableSourceLink", "true") ]
-
 
   DotNet.pack (fun p ->
     { p with
