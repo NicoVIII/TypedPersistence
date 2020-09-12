@@ -4,4 +4,5 @@ open System
 
 [<AutoOpen>]
 module Types =
-    type VersionMap = Map<uint32, Type>
+    type OnlyVersion = { version: uint32 }
+    type VersionAndData<'a> = { data: 'a; version: uint32 }
