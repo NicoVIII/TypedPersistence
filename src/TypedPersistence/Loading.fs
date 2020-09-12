@@ -3,20 +3,23 @@ namespace TypedPersistence
 open FSharp.Json
 open System.IO
 
+open TypedPersistence.Helper
+
 [<AutoOpen>]
 module Loading =
+    let private getFileContent filepath =
+        if File.Exists filepath then File.ReadAllText filepath |> Some else None
+
     let getVersion (filepath: string) =
-        let content = File.ReadAllText filepath
-        try
-            Json.deserialize<OnlyVersion> content
-            |> (fun v -> v.version)
-            |> Some
-        with :? JsonDeserializationError -> None
+        opt {
+            let! content = getFileContent filepath
+            let! parsed = deserializeJson<OnlyVersion> content
+            return parsed.version
+        }
 
     let load<'a> (filepath: string) =
-        let content = File.ReadAllText filepath
-        try
-            Json.deserialize<VersionAndData<'a>> content
-            |> (fun d -> d.data)
-            |> Some
-        with :? JsonDeserializationError -> None
+        opt {
+            let! content = getFileContent filepath
+            let! parsed = deserializeJson<VersionAndData<'a>> content
+            return parsed.data
+        }

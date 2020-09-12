@@ -33,7 +33,13 @@ let tests =
     testList
         "Test List"
         [ testList
-            "Save and load"
+            "Misc"
+              [ test "Load nonexisting file" {
+                    let value = load<string> "lalelu.txt"
+                    Expect.equal value None "Load on non-existing file should return None"
+                } ]
+          testList
+              "Save and load"
               [ basicSaveLoadTest<NonNull<string>> ()
                 basicSaveLoadTest<int> ()
                 basicSaveLoadTest<NonNull<string> list> ()

@@ -6,7 +6,7 @@ open System.IO
 
 [<AutoOpen>]
 module Saving =
-    let saveVersion (filePath: string) (version: uint) (data: 'a) =
+    let saveVersion<'a> (filePath: string) (version: uint) (data: 'a) =
         // Alias for writing text with single arguments and not with tuple
         let writeAllText filePath content =
             // Create path, if not existing
@@ -22,4 +22,4 @@ module Saving =
         |> (fun text -> text + Environment.NewLine) // Somehow this final new line is missing
         |> writeAllText filePath
 
-    let save (filePath: string) (data: 'a) = saveVersion filePath 1u data
+    let save<'a> (filePath: string) (data: 'a) = saveVersion filePath 1u data
