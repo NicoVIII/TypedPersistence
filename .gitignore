@@ -1,5 +1,6 @@
 deploy/
 AvaloniaBuildTasks.targets
+test-files/
 *.test.json
 /build
 /docs/_public
