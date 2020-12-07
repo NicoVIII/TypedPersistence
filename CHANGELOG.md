@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.6.0-alpha.4]
+## [0.6.0-alpha.5]
 ### Added
 - JSON support
 - Unified Provider classes for F# and C#

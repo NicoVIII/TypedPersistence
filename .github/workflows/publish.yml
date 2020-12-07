@@ -15,7 +15,13 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v1
+    - name: Get version from tag
+      id: tag_name
+      run: |
+        echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
+      shell: bash
+    - name: Checkout code
+      uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
@@ -28,10 +34,9 @@ jobs:
       run: dotnet fake build -t Pack
     - name: Get Changelog Entry
       id: changelog_reader
-      uses: mindsers/changelog-reader-action@v1.1.0
+      uses: mindsers/changelog-reader-action@v2.0.0
       with:
-        version: ${{ github.ref }}
-        path: ./CHANGELOG.md
+        version: ${{ steps.tag_name.outputs.current_version }}
     - name: Create Release
       id: create_release
       uses: actions/create-release@latest
@@ -40,9 +45,9 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: ${{ github.ref }}
-        body: ${{ steps.changelog_reader.outputs.log_entry }}
-        draft: false
-        prerelease: false
+        body: ${{ steps.changelog_reader.outputs.changes }}
+        prerelease: ${{ steps.changelog_reader.outputs.status == 'prereleased' }}
+        draft: ${{ steps.changelog_reader.outputs.status == 'unreleased' }}
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v1-release
       with:
