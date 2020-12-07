@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\TypedPersistence\Core\Core.fsproj" />
-    <ProjectReference Include="..\..\src\TypedPersistence\Json\Json.fsproj" />
+    <ProjectReference Include="..\..\src\TypedPersistence\Core\TypedPersistence.Core.fsproj" />
+    <ProjectReference Include="..\..\src\TypedPersistence\Json\TypedPersistence.Json.fsproj" />
   </ItemGroup>
 
   <Import Project="..\..\.paket\Paket.Restore.targets" />
