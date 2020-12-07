@@ -1,9 +1,10 @@
-namespace TypedPersistence
+namespace TypedPersistence.Json
 
-open FSharp.Json
 open System.IO
+open TypedPersistence.Core
 
-open TypedPersistence.Helper
+open TypedPersistence.Json.Helper
+open TypedPersistence.Json.Types
 
 [<AutoOpen>]
 module Loading =
@@ -14,7 +15,7 @@ module Loading =
         opt {
             let! content = getFileContent filepath
             let! parsed = deserializeJson<OnlyVersion> content
-            return parsed.version
+            return parsed.version |> Version
         }
 
     let load<'a> (filepath: string) =

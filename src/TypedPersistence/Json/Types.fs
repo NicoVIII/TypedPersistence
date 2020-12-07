@@ -1,8 +1,7 @@
-namespace TypedPersistence
+namespace TypedPersistence.Json
 
-open System
-
-[<AutoOpen>]
 module Types =
+    type Context = string
+
     type OnlyVersion = { version: uint32 }
     type VersionAndData<'a> = { data: 'a; version: uint32 }

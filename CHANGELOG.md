@@ -6,9 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.6.0-alpha.3]
+## [0.6.0-alpha.4]
+### Added
+- JSON support
+- Unified Provider classes for F# and C#
+- Version SCU for Savefileversion
+
 ### Changed
-- Changed from LiteDB to JSON as save file format
+- Project structure (Core + module for JSON)
+
+### Removed
+- LiteDB support (for now)
 
 ## [0.2.0] - 2019-12-19
 ### Changed
