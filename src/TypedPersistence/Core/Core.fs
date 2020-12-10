@@ -4,6 +4,7 @@ open System
 
 // C# friendly single case union: http://fssnip.net/7Vd
 /// Type for version of saves
+// TODO: think about it. I'm not sure, if I want that. I like SCUs for Domain Modelling but here it feels like unnecessary boilerplate somehow?
 [<Struct>]
 type Version =
     | Version of uint32
