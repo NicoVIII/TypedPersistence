@@ -11,7 +11,7 @@ open TypedPersistence.Json.Types
 module Saving =
     let saveVersion<'a> (filePath: Context) (Version version) (data: 'a) =
         // Alias for writing text with single arguments and not with tuple
-        let writeAllText filePath content =
+        let writeAllText (filePath: string) content =
             // Create path, if not existing
             filePath
             |> Path.GetDirectoryName

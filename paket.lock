@@ -10,10 +10,10 @@ NUGET
       FsCheck (>= 2.14.2)
     FsCheck (2.14.3)
       FSharp.Core (>= 4.2.3)
-    FSharp.Core (5.0)
-    FSharp.Json (0.4)
-      FSharp.Core (>= 4.6.2)
+    FSharp.Core (5.0.1)
     Mono.Cecil (0.11.3)
+    NicoVIII.FSharp.Json (0.5.0-rc.1)
+      FSharp.Core (>= 5.0.1) - restriction: || (== net50) (&& (== netstandard2.0) (>= net50)) (&& (== netstandard2.1) (>= net50))
 
 GROUP Build
 STORAGE: NONE

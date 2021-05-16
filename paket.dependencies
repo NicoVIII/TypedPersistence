@@ -8,7 +8,7 @@ framework: net5.0, netstandard2.1, netstandard2.0
 nuget Expecto
 nuget FsCheck
 nuget Expecto.FsCheck
-nuget FSharp.Json
+nuget NicoVIII.FSharp.Json prerelease
 
 group Docs
   source https://api.nuget.org/v3/index.json
