@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.6.0-alpha.5]
+## [0.6.0-alpha.6]
 ### Added
 - JSON support
 - Unified Provider classes for F# and C#
@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Project structure (Core + module for JSON)
+- PackageIDs (leading Owner)
 
 ### Removed
 - LiteDB support (for now)
