@@ -4,9 +4,9 @@
 
 open Fake.Core
 open Fake.DotNet
-open System.IO
 
 let project = "TypedPersistence"
+let submodules = [ "Core"; "Json" ]
 
 let summary =
   "Simple library which should simplify saving and loading files"
@@ -14,6 +14,7 @@ let summary =
 let authors = "NicoVIII"
 let tags = "Persistence,Typesafety,F#"
 let copyright = ""
+let license = "MIT"
 
 let gitOwner = "NicoVIII"
 let gitName = project
@@ -31,7 +32,7 @@ let nugetVersion = latestEntry.NuGetVersion
 let packageReleaseNotes =
   sprintf "%s/blob/v%s/CHANGELOG.md" gitUrl latestEntry.NuGetVersion
 
-let pack () =
+let pack submodule =
   let properties =
     [ ("Version", nugetVersion)
       ("Authors", authors)
@@ -39,7 +40,7 @@ let pack () =
       ("PackageTags", tags)
       ("RepositoryType", "git")
       ("RepositoryUrl", gitUrl)
-      ("PackageLicenseUrl", gitUrl + "/LICENSE")
+      ("PackageLicenseExpression", license)
       ("Copyright", copyright)
       ("PackageReleaseNotes", packageReleaseNotes)
       ("PackageDescription", summary)
@@ -53,13 +54,8 @@ let pack () =
           MSBuildParams =
             { p.MSBuildParams with
                 Properties = properties } })
-    "TypedPersistence.sln"
+    $"src/{project}/{submodule}/{project}.{submodule}.fsproj"
 
-let removeTests () =
-  Directory.GetFiles nugetDir
-  |> List.ofArray
-  |> List.filter (fun name -> name.Contains "UnitTests")
-  |> List.iter File.Delete
+let packAll () = List.iter pack submodules
 
-pack ()
-removeTests ()
+packAll ()
