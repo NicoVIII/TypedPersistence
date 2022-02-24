@@ -1,4 +1,4 @@
-name: Publish
+name: Pack
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - "v*.*.*"
 
 jobs:
-  build:
+  pack:
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -17,7 +17,13 @@ jobs:
       - name: Get version from tag
         id: tag_name
         run: |
+          if [[ ${GITHUB_REF} == *"-"* ]]; then
+            RTAG=Unreleased
+          else
+            RTAG=${GITHUB_REF#refs/tags/v}
+          fi
           echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
+          echo ::set-output name=release_tag::$RTAG
         shell: bash
       - name: Checkout code
         uses: actions/checkout@v2
@@ -27,31 +33,33 @@ jobs:
           dotnet-version: ${{ matrix.dotnet }}
       - name: Restore tools
         run: dotnet tool restore
-      - name: Run Test
-        run: dotnet run --project tests/TypedPersistence.UnitTests/TypedPersistence.UnitTests.fsproj
-      - name: Run build
-        run: dotnet fsi ./pack.fsx
+      - name: Pack
+        run: dotnet run pack ${{ steps.tag_name.outputs.current_version }}
       - name: Get Changelog Entry
         id: changelog_reader
         uses: mindsers/changelog-reader-action@v2.0.0
         with:
-          version: ${{ steps.tag_name.outputs.current_version }}
+          version: ${{ steps.tag_name.outputs.release_tag }}
       - name: Create Release
         id: create_release
         uses: actions/create-release@latest
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
           body: ${{ steps.changelog_reader.outputs.changes }}
-          prerelease: ${{ steps.changelog_reader.outputs.status == 'prereleased' }}
-          draft: ${{ steps.changelog_reader.outputs.status == 'unreleased' }}
+          prerelease: ${{ steps.changelog_reader.outputs.status == 'unreleased' }}
       - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v1-release
+        uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: out/*.nupkg
           tag: ${{ github.ref }}
-          overwrite: true
+          file: pack/*.nupkg
           file_glob: true
+      - name: Upload license to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          file: LICENSE.txt

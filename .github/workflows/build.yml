@@ -24,9 +24,7 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ matrix.dotnet }}
-    - name: Restore tools
-      run: dotnet tool restore
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Run build
-      run: dotnet run --project tests/TypedPersistence.UnitTests/TypedPersistence.UnitTests.fsproj
+    - name: Build
+      run: dotnet run build
+    - name: Run tests
+      run: dotnet run test
