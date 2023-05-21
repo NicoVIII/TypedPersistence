@@ -1,7 +1,7 @@
 open Fake.IO
 
 open RunHelpers
-open RunHelpers.BasicShortcuts
+open RunHelpers.Shortcuts
 open RunHelpers.Templates
 
 [<RequireQualifiedAccess>]
@@ -62,7 +62,6 @@ let main args =
     |> List.ofArray
     |> function
         | [ "restore" ] -> Task.restore ()
-        | []
         | [ "build" ] ->
             job {
                 Task.restore ()
@@ -74,6 +73,7 @@ let main args =
                 Task.build Release
                 Task.pack version
             }
+        | []
         | [ "test" ] ->
             job {
                 Task.restore ()
@@ -92,14 +92,10 @@ let main args =
                 Task.Docs.watch ()
             }
         // Missing args cases
-        | [ "pack" ] ->
-            let msg = [ "Usage: dotnet run pack <version>" ]
-            Error(1, msg)
+        | [ "pack" ] -> Job.error [ "Usage: dotnet run pack <version>" ]
         // Default error case
         | _ ->
-            let msg =
+            Job.error
                 [ "Usage: dotnet run [<command>]"
                   "Look up available commands in run.fs" ]
-
-            Error(1, msg)
-    |> ProcessResult.wrapUp
+    |> Job.execute

@@ -2,15 +2,7 @@ namespace TypedPersistence.Core
 
 open System
 
-// C# friendly single case union: http://fssnip.net/7Vd
-/// Type for version of saves
-// TODO: think about it. I'm not sure, if I want that. I like SCUs for Domain Modelling but here it feels like unnecessary boilerplate somehow?
-[<Struct>]
-type Version =
-    | Version of uint32
-    override this.ToString() = let (Version v) = this in string v
-    static member op_Equality(a, b: Version) = a = b
-    static member op_Inequality(a, b: Version) = a <> b
+type Version = uint32
 
 type IPersistenceProvider<'context> =
     abstract getVersion: 'context -> Version option
@@ -21,8 +13,8 @@ type IPersistenceProvider<'context> =
 type IPersistenceProviderCSharp<'context> =
     abstract GetVersion: 'context -> Nullable<Version>
 
-    abstract Load<'T when 'T: struct and 'T: (new: unit -> 'T) and 'T :> System.ValueType> : 'context
-     -> Nullable<'T>
+    abstract Load<'T when 'T: struct and 'T: (new: unit -> 'T) and 'T :> System.ValueType> :
+        'context -> Nullable<'T>
 
     abstract Save<'T> : 'context * 'T -> unit
     abstract SaveVersion<'T> : 'context * Version * 'T -> unit
@@ -34,8 +26,10 @@ module Provider =
             member _.GetVersion context =
                 provider.getVersion context |> Option.toNullable
 
-            member _.Load<'T when 'T: struct and 'T: (new: unit -> 'T) and 'T :> System.ValueType> context
-                                                                                                   =
+            member _.Load<'T
+                when 'T: struct and 'T: (new: unit -> 'T) and 'T :> System.ValueType>
+                context
+                =
                 provider.load<'T> context |> Option.toNullable
 
             member _.Save<'T>(context, object) = provider.save<'T> context object

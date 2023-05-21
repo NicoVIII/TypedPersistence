@@ -83,11 +83,11 @@ let tests =
 
                     let data = { data = "Hello World" }
 
-                    Json.Saving.saveVersion filepath (Version 3u) data
+                    Json.Saving.saveVersion filepath 3u data
 
                     let value =
                         match Json.Loading.getVersion filepath with
-                        | Some (Version 3u) ->
+                        | Some 3u ->
                             (Json.Loading.load<BasicRecord<string>> filepath).Value
                         | Some _
                         | None -> failwith "Could not load correct version!"

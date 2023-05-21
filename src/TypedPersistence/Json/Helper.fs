@@ -14,4 +14,5 @@ module Helper =
     let deserializeJson<'a> content =
         try
             Json.deserialize<'a> content |> Some
-        with :? JsonDeserializationError -> None
+        with :? JsonDeserializationError ->
+            None
