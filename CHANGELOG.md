@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Project structure (Core + module for JSON)
 - PackageIDs (leading Owner)
+- Loading and Saving are async now
 
 ### Removed
 - LiteDB support (for now)

@@ -12,10 +12,12 @@ module Saving =
     let saveVersion<'a> (filePath: Context) (version: Version) (data: 'a) =
         // Alias for writing text with single arguments and not with tuple
         let writeAllText (filePath: string) content =
-            // Create path, if not existing
-            filePath |> Path.GetDirectoryName |> Directory.CreateDirectory |> ignore
-            // Write data
-            File.WriteAllText(filePath, content)
+            async {
+                // Create path, if not existing
+                filePath |> Path.GetDirectoryName |> Directory.CreateDirectory |> ignore
+                // Write data
+                do! File.WriteAllTextAsync(filePath, content) |> Async.AwaitTask
+            }
 
         { version = version; data = data }
         |> Json.serialize
