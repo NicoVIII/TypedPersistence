@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" data-root="https://nicoviii.github.io/TypedPersistence/">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="NicoVIII" name="author">
+    <!-- Opengraph properties (https://ogp.me/) -->
+    <meta property="og:site_name" content="TypedPersistence">
+    <meta property="og:title" content="TypedPersistence
+" />
+    <meta property="og:url" content="https://nicoviii.github.io/TypedPersistence/index.html">
+    <meta property="og:type" content="website" />
+    <!-- Twitter cards (https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="https://nicoviii.github.io/TypedPersistence/">
+    <meta name="twitter:title" content="TypedPersistence
+">
+    
+    <title>TypedPersistence
+ | TypedPersistence</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://nicoviii.github.io/TypedPersistence/img/favicon.ico" rel="icon" sizes="32x32" type="image/png"/>
+    <script type="application/javascript" src="https://nicoviii.github.io/TypedPersistence/content/fsdocs-theme-set-dark.js"></script>
+    <link href="https://nicoviii.github.io/TypedPersistence/content/fsdocs-default.css" rel="stylesheet" type="text/css"/>
+    <link href="https://nicoviii.github.io/TypedPersistence/content/fsdocs-theme.css" rel="stylesheet" type="text/css"/>
+    
+    
+</head>
+<body class="content">
+<header>
+    <div class="start">
+        <div id="menu-toggle">
+            <iconify-icon class="icon closed" height="22" icon="eva:menu-fill" width="22"></iconify-icon>
+            <iconify-icon class="icon open" height="22" icon="mi:close" width="22"></iconify-icon>
+            <input type="checkbox" name="mobile-menu" />
+            <ul class="menu">
+                <li class="nav-header">Links</li>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/NicoVIII/TypedPersistence/blob/main/LICENSE.txt">License</a>
+                </li>
+                <li class="nav-item"><a class="nav-link"
+                                        href="https://github.com/NicoVIII/TypedPersistence/blob/main/CHANGELOG.md">Release
+                    Notes</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/NicoVIII/TypedPersistence/">Source
+                    Repository</a></li>
+                
+                <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://nicoviii.github.io/TypedPersistence/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+            </ul>
+        </div>
+        <a href="https://nicoviii.github.io/TypedPersistence/">
+            <img alt="Header menu logo" src="https://nicoviii.github.io/TypedPersistence/img/logo.png">
+            <strong>TypedPersistence</strong>
+        </a>
+    </div>
+    <div class="end">
+        <a href="https://github.com/NicoVIII/TypedPersistence/" target="_blank">
+            <iconify-icon icon="uil:github" width="26" height="26"></iconify-icon>
+        </a>
+        <iconify-icon id="search-btn" icon="carbon:search" class="search" width="24" height="24"></iconify-icon>
+        <fsdocs-theme-toggle></fsdocs-theme-toggle>
+    </div>
+</header>
+<aside id="fsdocs-main-menu">
+    <ul class="menu">
+        <li class="nav-header">Links</li>
+        <li class="nav-item"><a class="nav-link" href="https://github.com/NicoVIII/TypedPersistence/blob/main/LICENSE.txt">License</a>
+        </li>
+        <li class="nav-item"><a class="nav-link"
+                                href="https://github.com/NicoVIII/TypedPersistence/blob/main/CHANGELOG.md">Release
+            Notes</a></li>
+        <li class="nav-item"><a class="nav-link" href="https://github.com/NicoVIII/TypedPersistence/">Source
+            Repository</a></li>
+        
+        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://nicoviii.github.io/TypedPersistence/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+    </ul>
+</aside>
+<main>
+    <div id="content">
+        <h1><a name="TypedPersistence" class="anchor" href="#TypedPersistence">TypedPersistence</a></h1>
+<p><a href="https://github.com/NicoVIII/TypedPersistence/releases"><img src="https://img.shields.io/github/release-date/NicoVIII/TypedPersistence?style=flat-square&amp;label=latest%20release%20date" alt="GitHub Release Date" /></a>
+<a href="https://github.com/NicoVIII/TypedPersistence/commits"><img src="https://img.shields.io/github/last-commit/NicoVIII/TypedPersistence?style=flat-square" alt="Last commit" /></a></p>
+<p><a href="https://www.nuget.org/packages/NicoVIII.TypedPersistence.Core"><img src="https://img.shields.io/nuget/v/NicoVIII.TypedPersistence.Core.svg?logo=nuget&amp;label=Core&amp;style=flat-square" alt="Nuget (Core)" /></a>
+<a href="https://www.nuget.org/packages/NicoVIII.TypedPersistence.Json"><img src="https://img.shields.io/nuget/v/NicoVIII.TypedPersistence.Json.svg?logo=nuget&amp;label=Json&amp;style=flat-square" alt="Nuget (Json)" /></a></p>
+<p>This project aims at providing a typesafe way to load and safe from and to a persistent local database.
+It should be possible to define records as definition for the structure of the data and load and save different versions of data.</p>
+<p><strong>Disclaimer</strong><br />
+I'm not sure where I want to go with this. Current implementation(s) are using reflection which isn't very nice. But without a convenient way for metaprogramming and code generation on compile time (Myraid sadly adds unnecessary dependencies to a project which can cause problems), I couldn't find a better way...
+Also I had a look at the Avro format recently and thought about providing partial reading and appending operations but this is completely different to the current approach. So yeah, much to figure out here.</p>
+
+        
+    </div>
+</main>
+<aside id="fsdocs-page-menu">
+    <p id="on-this-page">On this page</p>
+    <ul>
+  <li class="level-1">
+    <a href="#TypedPersistence">
+      TypedPersistence
+    </a>
+  </li>
+</ul>
+</aside>
+<dialog>
+    <input type="search" placeholder="Search docs" />
+    <div class="results">
+        <ul></ul>
+        <p class="empty">Type something to start searching.</p>
+    </div>
+</dialog>
+<script type="module" src="https://nicoviii.github.io/TypedPersistence/content/fsdocs-tips.js"></script>
+<script type="module" src="https://nicoviii.github.io/TypedPersistence/content/fsdocs-theme-toggle.js"></script>
+<script type="module" src="https://nicoviii.github.io/TypedPersistence/content/fsdocs-theme.js"></script>
+<script type="module" src="https://nicoviii.github.io/TypedPersistence/content/fsdocs-search.js"></script>
+
+</body>
+</html>
