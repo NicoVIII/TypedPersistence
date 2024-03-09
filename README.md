@@ -1,7 +1,7 @@
 # TypedPersistence
 
+[![GitHub Release Date](https://img.shields.io/github/release-date/NicoVIII/TypedPersistence?style=flat-square&label=latest%20release%20date)](https://github.com/NicoVIII/TypedPersistence/releases)
 [![Last commit](https://img.shields.io/github/last-commit/NicoVIII/TypedPersistence?style=flat-square)](https://github.com/NicoVIII/TypedPersistence/commits)
-[![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.txt)
 
 [![Nuget (Core)](https://img.shields.io/nuget/v/NicoVIII.TypedPersistence.Core.svg?logo=nuget&label=Core&style=flat-square)](https://www.nuget.org/packages/NicoVIII.TypedPersistence.Core)
 [![Nuget (Json)](https://img.shields.io/nuget/v/NicoVIII.TypedPersistence.Json.svg?logo=nuget&label=Json&style=flat-square)](https://www.nuget.org/packages/NicoVIII.TypedPersistence.Json)
