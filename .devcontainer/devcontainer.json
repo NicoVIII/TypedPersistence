@@ -1,22 +1,17 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.209.6/containers/dotnet-fsharp
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/dotnet-fsharp
 {
     "name": "F# (.NET)",
-    "image": "mcr.microsoft.com/vscode/devcontainers/dotnet:0-6.0",
-    // Set *default* container specific settings.json values on container create.
+    // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+    "image": "mcr.microsoft.com/devcontainers/dotnet:1-6.0-bookworm",
+
+    // Features to add to the dev container. More info: https://containers.dev/features.
+    // "features": {},
+
+    // Configure tool-specific properties.
     "customizations": {
+        // Configure properties specific to VS Code.
         "vscode": {
-            "settings": {
-                "terminal.integrated.profiles.linux": {
-                    "bash": {
-                        "path": "bash"
-                    },
-                    "zsh": {
-                        "path": "zsh"
-                    }
-                },
-                "FSharp.dotnetRoot": "/usr/bin"
-            },
             // Add the IDs of extensions you want installed when the container is created.
             "extensions": [
                 "editorconfig.editorconfig",
@@ -25,13 +20,20 @@
                 "gruntfuggly.todo-tree",
                 "ms-dotnettools.csharp",
                 "Ionide.Ionide-fsharp"
-            ]
+            ],
+            "settings": {
+                "FSharp.dotnetRoot": "/usr/bin"
+            }
         }
     },
+
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
-    "forwardPorts": [
-        8080
-    ],
+    // "forwardPorts": [],
+
     // Use 'postCreateCommand' to run commands after the container is created.
-    "postCreateCommand": "dotnet tool restore && dotnet run restore"
+    // "postCreateCommand": "dotnet restore",
+    "postStartCommand": "dotnet tool restore && dotnet run restore"
+
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    // "remoteUser": "root"
 }

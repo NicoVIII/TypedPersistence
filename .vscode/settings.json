@@ -1,5 +1,5 @@
 {
     "editor.formatOnSave": true,
     "files.trimFinalNewlines": true,
-    "FSharp.workspacePath": "TypedPersistence.sln"
+    "json.format.keepLines": true,
 }
