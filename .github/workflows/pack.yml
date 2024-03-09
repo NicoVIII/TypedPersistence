@@ -26,9 +26,9 @@ jobs:
           echo ::set-output name=release_tag::$RTAG
         shell: bash
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet }}
       - name: Restore tools
@@ -37,7 +37,7 @@ jobs:
         run: dotnet run pack ${{ steps.tag_name.outputs.current_version }}
       - name: Get Changelog Entry
         id: changelog_reader
-        uses: mindsers/changelog-reader-action@v2.0.0
+        uses: mindsers/changelog-reader-action@v2
         with:
           version: ${{ steps.tag_name.outputs.release_tag }}
       - name: Create Release
